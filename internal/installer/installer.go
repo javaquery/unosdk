@@ -67,16 +67,24 @@ func (i *Installer) Install(ctx context.Context, sdkType models.SDKType, provide
 	// Get install path
 	installPath := provider.GetDefaultInstallPath(version)
 
-	// Check if already installed
+	// Check if already installed by looking for actual content
 	if _, err := os.Stat(installPath); err == nil {
-		i.logger.Warn("SDK already installed at path", zap.String("path", installPath))
-		return &models.SDK{
-			Type:        sdkType,
-			Provider:    providerName,
-			Version:     version,
-			InstallPath: installPath,
-			Installed:   true,
-		}, nil
+		// Check if directory has content (not just an empty dir left from previous uninstall)
+		entries, readErr := os.ReadDir(installPath)
+		if readErr == nil && len(entries) > 0 {
+			i.logger.Warn("SDK already installed at path", zap.String("path", installPath))
+			// Find the actual install path (might be a subdirectory)
+			actualPath, _ := i.findActualInstallPath(installPath)
+			return &models.SDK{
+				Type:        sdkType,
+				Provider:    providerName,
+				Version:     version,
+				InstallPath: actualPath,
+				Installed:   true,
+			}, nil
+		}
+		// If directory is empty, remove it and continue with installation
+		os.RemoveAll(installPath)
 	}
 
 	// Create temporary directory for download
@@ -150,8 +158,18 @@ func (i *Installer) Uninstall(installPath string) error {
 		return fmt.Errorf("SDK not found at path: %s", installPath)
 	}
 
+	// Remove the SDK directory
 	if err := os.RemoveAll(installPath); err != nil {
 		return fmt.Errorf("failed to remove SDK: %w", err)
+	}
+
+	// Also clean up parent directory if it's empty (version directory)
+	// This handles cases where installPath is like: .unosdk/java/openjdk/11/jdk-11.0.21+9
+	// We want to also remove the "11" directory if it's now empty
+	parentDir := filepath.Dir(installPath)
+	if entries, err := os.ReadDir(parentDir); err == nil && len(entries) == 0 {
+		os.RemoveAll(parentDir)
+		i.logger.Info("Cleaned up empty parent directory", zap.String("path", parentDir))
 	}
 
 	i.logger.Info("Uninstallation completed successfully")
