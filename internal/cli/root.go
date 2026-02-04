@@ -36,6 +36,9 @@ Examples:
   # Install latest Node.js
   unosdk install node nodejs latest
 
+  # Switch to a different Java version
+  unosdk switch java openjdk 21
+
   # List all available providers
   unosdk list
 
@@ -53,6 +56,7 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(uninstallCmd)
+	rootCmd.AddCommand(switchCmd)
 	rootCmd.AddCommand(versionCmd)
 
 	// Global flags

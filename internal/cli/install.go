@@ -12,7 +12,6 @@ import (
 	"github.com/javaquery/unosdk/internal/providers/node"
 	"github.com/javaquery/unosdk/internal/providers/python"
 	"github.com/javaquery/unosdk/internal/registry"
-	"github.com/javaquery/unosdk/internal/system"
 	"github.com/javaquery/unosdk/pkg/models"
 )
 
@@ -51,7 +50,7 @@ func init() {
 	installCmd.Flags().StringVar(&installArch, "arch", runtime.GOARCH, "Architecture (x64, x86, arm64)")
 	installCmd.Flags().StringVar(&installPath, "path", "", "Custom installation path")
 	installCmd.Flags().BoolVar(&skipEnvSetup, "skip-env", false, "Skip environment variable setup")
-	installCmd.Flags().BoolVar(&setAsDefault, "set-default", true, "Set as default SDK for the type")
+	installCmd.Flags().BoolVar(&setAsDefault, "set-default", false, "Set as default SDK for the type")
 }
 
 func runInstall(cmd *cobra.Command, args []string) error {
@@ -96,7 +95,12 @@ func runInstall(cmd *cobra.Command, args []string) error {
 
 	// Setup environment variables (Windows-specific)
 	if !skipEnvSetup && runtime.GOOS == "windows" {
-		if err := setupEnvironment(sdk); err != nil {
+		// Cleanup existing PATH entries first
+		if err := cleanupExistingSDKPaths(reg, sdk); err != nil {
+			fmt.Printf("⚠ Warning: Failed to cleanup existing PATH entries: %v\n", err)
+		}
+
+		if err := setupSDKEnvironment(sdk, setAsDefault); err != nil {
 			fmt.Printf("⚠ Warning: Failed to setup environment variables: %v\n", err)
 			fmt.Println("  You may need to configure environment variables manually.")
 		} else {
@@ -109,47 +113,4 @@ func runInstall(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func setupEnvironment(sdk *models.SDK) error {
-	env := system.NewWindowsEnv()
 
-	switch sdk.Type {
-	case models.JavaSDK:
-		// Set JAVA_HOME
-		if setAsDefault {
-			if err := env.SetJavaHome(sdk.InstallPath); err != nil {
-				return err
-			}
-			fmt.Println("  Set JAVA_HOME=" + sdk.InstallPath)
-		}
-
-		// Add to PATH
-		binPath := sdk.InstallPath + "\\bin"
-		if err := env.AddToPath(binPath); err != nil {
-			return err
-		}
-		fmt.Println("  Added to PATH: " + binPath)
-
-	case models.NodeSDK:
-		// Add to PATH
-		if err := env.AddToPath(sdk.InstallPath); err != nil {
-			return err
-		}
-		fmt.Println("  Added to PATH: " + sdk.InstallPath)
-
-	case models.PythonSDK:
-		// Add to PATH
-		if err := env.AddToPath(sdk.InstallPath); err != nil {
-			return err
-		}
-		fmt.Println("  Added to PATH: " + sdk.InstallPath)
-
-		// Add Scripts directory
-		scriptsPath := sdk.InstallPath + "\\Scripts"
-		if err := env.AddToPath(scriptsPath); err != nil {
-			return err
-		}
-		fmt.Println("  Added to PATH: " + scriptsPath)
-	}
-
-	return nil
-}
