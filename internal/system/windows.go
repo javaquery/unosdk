@@ -185,8 +185,8 @@ func (w *WindowsEnv) GetSystemEnvironmentVariable(name string) (string, error) {
 	return value, nil
 }
 
-// DetectJavaConflicts checks for Java installations in System PATH that would take precedence
-func (w *WindowsEnv) DetectJavaConflicts() []string {
+// DetectSDKConflicts checks for SDK installations in System PATH that would take precedence
+func (w *WindowsEnv) DetectSDKConflicts(sdkType string) []string {
 	systemPath, err := w.GetSystemEnvironmentVariable("Path")
 	if err != nil {
 		return nil
@@ -196,11 +196,42 @@ func (w *WindowsEnv) DetectJavaConflicts() []string {
 	paths := strings.Split(systemPath, ";")
 	
 	for _, p := range paths {
-		pLower := strings.ToLower(strings.TrimSpace(p))
-		// Check for common Java installation paths
-		if strings.Contains(pLower, "java") && 
-		   (strings.Contains(pLower, "bin") || strings.Contains(pLower, "javapath")) {
-			conflicts = append(conflicts, strings.TrimSpace(p))
+		pTrimmed := strings.TrimSpace(p)
+		if pTrimmed == "" {
+			continue
+		}
+		pLower := strings.ToLower(pTrimmed)
+		
+		switch sdkType {
+		case "java":
+			// Check for common Java installation paths (excluding unosdk)
+			if strings.Contains(pLower, "unosdk") {
+				continue // Skip our own installations
+			}
+			if (strings.Contains(pLower, "java") || strings.Contains(pLower, "jdk") || strings.Contains(pLower, "jre")) && 
+			   (strings.Contains(pLower, "bin") || strings.Contains(pLower, "javapath") || 
+			    strings.Contains(pLower, "corretto") || strings.Contains(pLower, "openjdk")) {
+				conflicts = append(conflicts, pTrimmed)
+			}
+		case "node":
+			// Check for common Node.js installation paths (excluding unosdk)
+			if strings.Contains(pLower, "unosdk") {
+				continue // Skip our own installations
+			}
+			if strings.Contains(pLower, "nodejs") || 
+			   (strings.Contains(pLower, "node") && (strings.Contains(pLower, "program files") || strings.Contains(pLower, "programfiles"))) {
+				conflicts = append(conflicts, pTrimmed)
+			}
+		case "python":
+			// Check for common Python installation paths (excluding unosdk)
+			if strings.Contains(pLower, "unosdk") {
+				continue // Skip our own installations
+			}
+			if strings.Contains(pLower, "python") && 
+			   (strings.Contains(pLower, "program files") || strings.Contains(pLower, "programfiles") || 
+			    strings.Contains(pLower, "appdata") || strings.Contains(pLower, "scripts")) {
+				conflicts = append(conflicts, pTrimmed)
+			}
 		}
 	}
 	

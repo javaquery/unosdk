@@ -52,21 +52,34 @@ func cleanupExistingSDKPaths(reg *registry.Registry, sdk *models.SDK) error {
 	return nil
 }
 
-// checkSystemPathConflicts detects and removes (if admin) or warns about Java installations in System PATH
+// checkSystemPathConflicts detects and removes (if admin) or warns about SDK installations in System PATH
 func checkSystemPathConflicts(sdk *models.SDK) {
-	// Only check for Java SDKs
-	if sdk.Type != models.JavaSDK {
+	env := system.NewWindowsEnv()
+	
+	// Map SDK type to search string
+	var sdkTypeName string
+	var displayName string
+	switch sdk.Type {
+	case models.JavaSDK:
+		sdkTypeName = "java"
+		displayName = "Java"
+	case models.NodeSDK:
+		sdkTypeName = "node"
+		displayName = "Node.js"
+	case models.PythonSDK:
+		sdkTypeName = "python"
+		displayName = "Python"
+	default:
 		return
 	}
-
-	env := system.NewWindowsEnv()
-	conflicts := env.DetectJavaConflicts()
+	
+	conflicts := env.DetectSDKConflicts(sdkTypeName)
 	
 	if len(conflicts) == 0 {
 		return
 	}
 
-	fmt.Println("\n⚠ Found Java installation(s) in System PATH that will take precedence:")
+	fmt.Printf("\n⚠ Found %s installation(s) in System PATH that will take precedence:\n", displayName)
 	for _, path := range conflicts {
 		fmt.Printf("  - %s\n", path)
 	}
@@ -77,21 +90,21 @@ func checkSystemPathConflicts(sdk *models.SDK) {
 		
 		if err := env.RemoveFromSystemPath(conflicts); err != nil {
 			fmt.Printf("❌ Failed to remove from System PATH: %v\n", err)
-			showManualInstructions()
+			showManualInstructions(displayName)
 		} else {
-			fmt.Println("✓ Successfully removed conflicting Java paths from System PATH")
-			fmt.Println("  Your unosdk-managed Java will now take precedence")
+			fmt.Printf("✓ Successfully removed conflicting %s paths from System PATH\n", displayName)
+			fmt.Printf("  Your unosdk-managed %s will now take precedence\n", displayName)
 		}
 	} else {
 		fmt.Println("\n⚠ Not running with administrator privileges")
-		fmt.Println("  To automatically fix this, run the command as Administrator")
+		fmt.Printf("  To automatically fix this, run the command as Administrator\n")
 		fmt.Println("  Or follow these manual steps:")
-		showManualInstructions()
+		showManualInstructions(displayName)
 	}
 }
 
-func showManualInstructions() {
-	fmt.Println("\nManual fix steps:")
+func showManualInstructions(sdkName string) {
+	fmt.Printf("\nManual fix steps to remove %s from System PATH:\n", sdkName)
 	fmt.Println("  1. Press Win+R, type 'sysdm.cpl' and press Enter")
 	fmt.Println("  2. Go to 'Advanced' tab → 'Environment Variables'")
 	fmt.Println("  3. Under 'System variables', select 'Path' → 'Edit'")
