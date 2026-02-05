@@ -46,7 +46,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 Open PowerShell and run:
 
 ```powershell
-irm https://raw.githubusercontent.com/javaquery/unosdk/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/javaquery/unosdk/refs/heads/master/scripts/install.ps1 | iex
 ```
 
 This will automatically:
