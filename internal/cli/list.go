@@ -89,6 +89,7 @@ func listAvailable() error {
 	// Register providers
 	providerRegistry.Register(java.NewAmazonCorrettoProvider())
 	providerRegistry.Register(java.NewOpenJDKProvider())
+	providerRegistry.Register(java.NewGraalVMProvider())
 	providerRegistry.Register(node.NewNodeJSProvider())
 	providerRegistry.Register(python.NewPythonProvider())
 

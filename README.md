@@ -16,7 +16,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 - 🚀 **Multi-SDK Support**: Manage Java, Node.js, and Python installations from a single tool
 - 🔄 **Version Switching**: Easily switch between different SDK versions
 - 📦 **Multiple Providers**: Support for various distribution providers
-  - Java: Amazon Corretto, OpenJDK
+  - Java: Amazon Corretto, OpenJDK, GraalVM
   - Node.js: Official Node.js distributions
   - Python: Official Python distributions
 - 🔧 **Automatic Environment Setup**: Automatically configures PATH and environment variables
@@ -28,7 +28,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 
 | SDK Type | Providers | Description |
 |----------|-----------|-------------|
-| Java | Amazon Corretto, OpenJDK | Java Development Kit |
+| Java | Amazon Corretto, OpenJDK, GraalVM | Java Development Kit |
 | Node.js | nodejs | JavaScript runtime environment |
 | Python | python | Python programming language |
 
@@ -117,6 +117,9 @@ unosdk list --installed
 ```bash
 # Install Amazon Corretto Java 21
 unosdk install java amazoncorretto 21
+
+# Install GraalVM
+unosdk install java graalvm 23.1.2
 
 # Install latest Node.js
 unosdk install node nodejs latest
@@ -236,7 +239,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Roadmap
 
-- [ ] Add support for more SDK providers (GraalVM, Adoptium, etc.)
+- [x] Add support for GraalVM
+- [ ] Add support for more SDK providers (Adoptium, etc.)
 - [ ] Cross-platform support (Linux, macOS)
 - [ ] GUI interface
 - [ ] Automatic version detection from project files
