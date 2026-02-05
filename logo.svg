@@ -1,0 +1,23 @@
+<svg width="200" height="152" viewBox="25 40 190 145" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Top Left Cube (Google Blue) -->
+  <polygon points="90,60 120,45 150,60 120,75" fill="#5A95F5"/>
+  <polygon points="90,60 120,75 120,110 90,95" fill="#4285F4"/>
+  <polygon points="150,60 120,75 120,110 150,95" fill="#2A6DE0"/>
+
+  <!-- Top Right Cube (Google Red) -->
+  <polygon points="150,95 180,80 210,95 180,110" fill="#F06A5F"/>
+  <polygon points="150,95 180,110 180,145 150,130" fill="#EA4335"/>
+  <polygon points="210,95 180,110 180,145 210,130" fill="#C53929"/>
+
+  <!-- Bottom Left Cube (Google Yellow) -->
+  <polygon points="30,95 60,80 90,95 60,110" fill="#FCD34D"/>
+  <polygon points="30,95 60,110 60,145 30,130" fill="#FBBC05"/>
+  <polygon points="90,95 60,110 60,145 90,130" fill="#D9A404"/>
+
+  <!-- Bottom Center Cube (Google Green) -->
+  <polygon points="90,130 120,115 150,130 120,145" fill="#5BC878"/>
+  <polygon points="90,130 120,145 120,180 90,165" fill="#34A853"/>
+  <polygon points="150,130 120,145 120,180 150,165" fill="#2C8E46"/>
+
+</svg>

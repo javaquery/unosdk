@@ -1,5 +1,9 @@
 # UnoSDK
 
+<p align="center">
+  <img src="logo.svg" alt="UnoSDK Logo" width="200"/>
+</p>
+
 **UnoSDK** is a powerful CLI tool for Windows that simplifies the installation and management of multiple software development kits (SDKs) from various providers. Think of it as **SDKMAN for Windows** - bringing the same ease of SDK management to Windows machines. Say goodbye to manual downloads, extractions, and environment variable configurations.
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://golang.org/)
