@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // Extractor handles archive extraction
@@ -27,12 +29,52 @@ func (e *Extractor) Extract(archivePath, destPath string) error {
 	case ".tar", ".gz", ".tgz":
 		return e.extractTar(archivePath, destPath)
 	case ".exe":
-		// For .exe installers, we might just move them or run them
-		// For now, just copy to destination
+		// For Python .exe installers, run silent installation
+		if strings.Contains(strings.ToLower(archivePath), "python") {
+			return e.installPythonExe(archivePath, destPath)
+		}
+		// For other .exe files, just copy them
 		return e.copyFile(archivePath, filepath.Join(destPath, filepath.Base(archivePath)))
 	default:
 		return fmt.Errorf("unsupported archive format: %s", ext)
 	}
+}
+
+// installPythonExe runs Python installer with silent flags
+func (e *Extractor) installPythonExe(exePath, destPath string) error {
+	// Python installer arguments for silent installation
+	// /quiet - silent mode
+	// TargetDir - specify installation directory
+	// PrependPath=0 - don't modify PATH (we'll handle it ourselves)
+	// Include_test=0 - don't include tests
+	// SimpleInstall=1 - simple installation
+	// SimpleInstallDescription - suppress UI
+	
+	cmd := exec.Command(exePath,
+		"/quiet",
+		fmt.Sprintf("TargetDir=%s", destPath),
+		"PrependPath=0",
+		"Include_test=0",
+		"SimpleInstall=1",
+		"SimpleInstallDescription=Installing Python...",
+	)
+	
+	// Capture output for debugging
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("failed to install Python: %w\nOutput: %s", err, string(output))
+	}
+	
+	// Wait a bit for installer to complete file operations
+	time.Sleep(2 * time.Second)
+	
+	// Verify installation
+	pythonExe := filepath.Join(destPath, "python.exe")
+	if _, err := os.Stat(pythonExe); os.IsNotExist(err) {
+		return fmt.Errorf("python.exe not found after installation at: %s", pythonExe)
+	}
+	
+	return nil
 }
 
 // extractZip extracts a ZIP archive
