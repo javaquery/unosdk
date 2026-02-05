@@ -73,6 +73,9 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 
 		fmt.Println("✓ Environment variables configured")
 		fmt.Printf("  Location: %s\n", sdk.InstallPath)
+		
+		// Check for conflicts with System PATH
+		checkSystemPathConflicts(sdk)
 	} else {
 		return fmt.Errorf("switch command is currently only supported on Windows")
 	}

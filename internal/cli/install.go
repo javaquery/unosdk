@@ -50,7 +50,7 @@ func init() {
 	installCmd.Flags().StringVar(&installArch, "arch", runtime.GOARCH, "Architecture (x64, x86, arm64)")
 	installCmd.Flags().StringVar(&installPath, "path", "", "Custom installation path")
 	installCmd.Flags().BoolVar(&skipEnvSetup, "skip-env", false, "Skip environment variable setup")
-	installCmd.Flags().BoolVar(&setAsDefault, "set-default", false, "Set as default SDK for the type")
+	installCmd.Flags().BoolVar(&setAsDefault, "set-default", true, "Set as default SDK for the type")
 }
 
 func runInstall(cmd *cobra.Command, args []string) error {
@@ -105,10 +105,13 @@ func runInstall(cmd *cobra.Command, args []string) error {
 			fmt.Println("  You may need to configure environment variables manually.")
 		} else {
 			fmt.Println("✓ Environment variables configured")
+			
+			// Check for conflicts with System PATH
+			checkSystemPathConflicts(sdk)
 		}
 	}
 
-	fmt.Println("\nInstallation complete! You may need to restart your terminal for changes to take effect.")
+	fmt.Println("\n✓ Installation complete!")
 
 	return nil
 }

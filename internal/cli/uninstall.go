@@ -34,7 +34,7 @@ Examples:
 }
 
 func init() {
-	uninstallCmd.Flags().BoolVar(&cleanupEnv, "cleanup-env", false, "Remove from PATH and clean environment variables")
+	uninstallCmd.Flags().BoolVar(&cleanupEnv, "cleanup-env", true, "Remove from PATH and clean environment variables")
 }
 
 func runUninstall(cmd *cobra.Command, args []string) error {
@@ -75,26 +75,36 @@ func runUninstall(cmd *cobra.Command, args []string) error {
 
 	// Cleanup environment variables if requested
 	if cleanupEnv {
-		if err := cleanupEnvironment(sdk); err != nil {
+		wasDefault, err := cleanupEnvironment(sdk)
+		if err != nil {
 			fmt.Printf("⚠ Warning: Failed to cleanup environment variables: %v\n", err)
 		} else {
 			fmt.Println("✓ Environment variables cleaned up")
+			
+			// If the uninstalled SDK was the default, try to set a new one
+			if wasDefault {
+				if err := setNewDefault(reg, sdkType, providerName); err != nil {
+					fmt.Printf("⚠ No alternative SDK found to set as default\n")
+				}
+			}
 		}
 	}
 
 	return nil
 }
 
-func cleanupEnvironment(sdk *models.SDK) error {
+func cleanupEnvironment(sdk *models.SDK) (bool, error) {
 	env := system.NewWindowsEnv()
+	wasDefault := false
 
 	switch sdk.Type {
 	case models.JavaSDK:
 		// Check if this is the current JAVA_HOME
 		currentHome, err := env.GetJavaHome()
 		if err == nil && currentHome == sdk.InstallPath {
+			wasDefault = true
 			if err := env.DeleteUserEnvironmentVariable("JAVA_HOME"); err != nil {
-				return err
+				return wasDefault, err
 			}
 			fmt.Println("  Removed JAVA_HOME")
 		}
@@ -102,31 +112,81 @@ func cleanupEnvironment(sdk *models.SDK) error {
 		// Remove from PATH
 		binPath := sdk.InstallPath + "\\bin"
 		if err := env.RemoveFromPath(binPath); err != nil {
-			return err
+			return wasDefault, err
 		}
 		fmt.Println("  Removed from PATH: " + binPath)
 
 	case models.NodeSDK:
 		// Remove from PATH
 		if err := env.RemoveFromPath(sdk.InstallPath); err != nil {
-			return err
+			return wasDefault, err
 		}
+		wasDefault = true // Node/Python are default if they were in PATH
 		fmt.Println("  Removed from PATH: " + sdk.InstallPath)
 
 	case models.PythonSDK:
 		// Remove from PATH
 		if err := env.RemoveFromPath(sdk.InstallPath); err != nil {
-			return err
+			return wasDefault, err
 		}
+		wasDefault = true // Node/Python are default if they were in PATH
 		fmt.Println("  Removed from PATH: " + sdk.InstallPath)
 
 		// Remove Scripts directory
 		scriptsPath := sdk.InstallPath + "\\Scripts"
 		if err := env.RemoveFromPath(scriptsPath); err != nil {
-			return err
+			return wasDefault, err
 		}
 		fmt.Println("  Removed from PATH: " + scriptsPath)
 	}
 
+	return wasDefault, nil
+}
+
+// setNewDefault attempts to set a new default SDK after uninstallation
+// Priority: Same provider versions first, then other providers
+func setNewDefault(reg *registry.Registry, sdkType models.SDKType, uninstalledProvider string) error {
+	// Get all installed SDKs of the same type
+	installedSDKs := reg.ListByType(sdkType)
+	
+	if len(installedSDKs) == 0 {
+		return fmt.Errorf("no alternative SDKs found")
+	}
+
+	// Sort: prioritize same provider first
+	var sameProvider []*models.SDK
+	var otherProviders []*models.SDK
+
+	for _, sdk := range installedSDKs {
+		if sdk.Provider == uninstalledProvider {
+			sameProvider = append(sameProvider, sdk)
+		} else {
+			otherProviders = append(otherProviders, sdk)
+		}
+	}
+
+	// Choose the first available SDK (same provider takes precedence)
+	var newDefault *models.SDK
+	if len(sameProvider) > 0 {
+		newDefault = sameProvider[0]
+		fmt.Printf("\n⚡ Setting %s %s %s as new default (same provider)...\n", 
+			newDefault.Type, newDefault.Provider, newDefault.Version)
+	} else if len(otherProviders) > 0 {
+		newDefault = otherProviders[0]
+		fmt.Printf("\n⚡ Setting %s %s %s as new default (alternative provider)...\n", 
+			newDefault.Type, newDefault.Provider, newDefault.Version)
+	} else {
+		return fmt.Errorf("no alternative SDKs found")
+	}
+
+	// Setup environment for the new default
+	setJavaHome := (sdkType == models.JavaSDK)
+	if err := setupSDKEnvironment(newDefault, setJavaHome); err != nil {
+		return fmt.Errorf("failed to set new default: %w", err)
+	}
+
+	fmt.Printf("✓ Successfully set %s %s %s as default\n", 
+		newDefault.Type, newDefault.Provider, newDefault.Version)
+	
 	return nil
 }

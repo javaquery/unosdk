@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"syscall"
+	"unsafe"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -62,7 +64,7 @@ func (w *WindowsEnv) DeleteUserEnvironmentVariable(name string) error {
 	return w.broadcastEnvironmentChange()
 }
 
-// AddToPath adds a directory to the user's PATH
+// AddToPath adds a directory to the user's PATH (prepends to take precedence)
 func (w *WindowsEnv) AddToPath(dir string) error {
 	currentPath, err := w.GetUserEnvironmentVariable("Path")
 	if err != nil {
@@ -74,17 +76,23 @@ func (w *WindowsEnv) AddToPath(dir string) error {
 	paths := strings.Split(currentPath, ";")
 	for _, p := range paths {
 		if strings.EqualFold(strings.TrimSpace(p), strings.TrimSpace(dir)) {
-			// Already in PATH
-			return nil
+			// Already in PATH, remove it so we can prepend it
+			var newPaths []string
+			for _, path := range paths {
+				if !strings.EqualFold(strings.TrimSpace(path), strings.TrimSpace(dir)) {
+					newPaths = append(newPaths, path)
+				}
+			}
+			currentPath = strings.Join(newPaths, ";")
+			break
 		}
 	}
 
-	// Add to PATH
-	newPath := currentPath
-	if newPath != "" && !strings.HasSuffix(newPath, ";") {
-		newPath += ";"
+	// Prepend to PATH (add at the beginning to take precedence over Cursor/VS Code extensions)
+	newPath := dir
+	if currentPath != "" {
+		newPath += ";" + currentPath
 	}
-	newPath += dir
 
 	return w.SetUserEnvironmentVariable("Path", newPath)
 }
@@ -128,9 +136,220 @@ func (w *WindowsEnv) GetJavaHome() (string, error) {
 
 // broadcastEnvironmentChange notifies Windows that environment variables have changed
 func (w *WindowsEnv) broadcastEnvironmentChange() error {
-	// In a real implementation, this would use Windows API
-	// to broadcast WM_SETTINGCHANGE message
-	// For now, we'll just return nil as the registry changes
-	// will take effect in new processes
+	const (
+		HWND_BROADCAST   = 0xFFFF
+		WM_SETTINGCHANGE = 0x001A
+		SMTO_ABORTIFHUNG = 0x0002
+	)
+
+	user32 := syscall.NewLazyDLL("user32.dll")
+	sendMessageTimeout := user32.NewProc("SendMessageTimeoutW")
+
+	environment, err := syscall.UTF16PtrFromString("Environment")
+	if err != nil {
+		return fmt.Errorf("failed to convert string: %w", err)
+	}
+
+	// Broadcast WM_SETTINGCHANGE to notify all windows about environment change
+	ret, _, _ := sendMessageTimeout.Call(
+		uintptr(HWND_BROADCAST),
+		uintptr(WM_SETTINGCHANGE),
+		0,
+		uintptr(unsafe.Pointer(environment)),
+		uintptr(SMTO_ABORTIFHUNG),
+		2000, // 2 second timeout
+		0,
+	)
+
+	if ret == 0 {
+		// Not necessarily an error - some windows may not respond
+		// but changes will still take effect in new processes
+	}
+
 	return nil
+}
+
+// GetSystemEnvironmentVariable gets a system-level environment variable from registry
+func (w *WindowsEnv) GetSystemEnvironmentVariable(name string) (string, error) {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SYSTEM\CurrentControlSet\Control\Session Manager\Environment`, registry.QUERY_VALUE)
+	if err != nil {
+		return "", fmt.Errorf("failed to open registry key: %w", err)
+	}
+	defer k.Close()
+
+	value, _, err := k.GetStringValue(name)
+	if err != nil {
+		return "", fmt.Errorf("failed to get environment variable: %w", err)
+	}
+
+	return value, nil
+}
+
+// DetectJavaConflicts checks for Java installations in System PATH that would take precedence
+func (w *WindowsEnv) DetectJavaConflicts() []string {
+	systemPath, err := w.GetSystemEnvironmentVariable("Path")
+	if err != nil {
+		return nil
+	}
+
+	var conflicts []string
+	paths := strings.Split(systemPath, ";")
+	
+	for _, p := range paths {
+		pLower := strings.ToLower(strings.TrimSpace(p))
+		// Check for common Java installation paths
+		if strings.Contains(pLower, "java") && 
+		   (strings.Contains(pLower, "bin") || strings.Contains(pLower, "javapath")) {
+			conflicts = append(conflicts, strings.TrimSpace(p))
+		}
+	}
+	
+	return conflicts
+}
+
+// RemoveFromSystemPath removes directories from System PATH (requires admin privileges)
+func (w *WindowsEnv) RemoveFromSystemPath(dirsToRemove []string) error {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SYSTEM\CurrentControlSet\Control\Session Manager\Environment`, registry.QUERY_VALUE|registry.SET_VALUE)
+	if err != nil {
+		return fmt.Errorf("failed to open registry key (admin rights required): %w", err)
+	}
+	defer k.Close()
+
+	currentPath, _, err := k.GetStringValue("Path")
+	if err != nil {
+		return fmt.Errorf("failed to get System PATH: %w", err)
+	}
+
+	paths := strings.Split(currentPath, ";")
+	var newPaths []string
+	removed := 0
+	
+	for _, p := range paths {
+		shouldRemove := false
+		pTrimmed := strings.TrimSpace(p)
+		
+		for _, dirToRemove := range dirsToRemove {
+			if strings.EqualFold(pTrimmed, strings.TrimSpace(dirToRemove)) {
+				shouldRemove = true
+				removed++
+				break
+			}
+		}
+		
+		if !shouldRemove && pTrimmed != "" {
+			newPaths = append(newPaths, p)
+		}
+	}
+
+	if removed == 0 {
+		return nil // Nothing to remove
+	}
+
+	newPath := strings.Join(newPaths, ";")
+	if err := k.SetStringValue("Path", newPath); err != nil {
+		return fmt.Errorf("failed to update System PATH: %w", err)
+	}
+
+	return w.broadcastEnvironmentChange()
+}
+
+// SetSystemEnvironmentVariable sets a system-level environment variable (requires admin)
+func (w *WindowsEnv) SetSystemEnvironmentVariable(name, value string) error {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SYSTEM\CurrentControlSet\Control\Session Manager\Environment`, registry.SET_VALUE)
+	if err != nil {
+		return fmt.Errorf("failed to open registry key (admin rights required): %w", err)
+	}
+	defer k.Close()
+
+	if err := k.SetStringValue(name, value); err != nil {
+		return fmt.Errorf("failed to set system environment variable: %w", err)
+	}
+
+	return w.broadcastEnvironmentChange()
+}
+
+// AddToSystemPath adds a directory to System PATH, prepending it (requires admin)
+func (w *WindowsEnv) AddToSystemPath(dir string) error {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SYSTEM\CurrentControlSet\Control\Session Manager\Environment`, registry.QUERY_VALUE|registry.SET_VALUE)
+	if err != nil {
+		return fmt.Errorf("failed to open registry key (admin rights required): %w", err)
+	}
+	defer k.Close()
+
+	currentPath, _, err := k.GetStringValue("Path")
+	if err != nil {
+		currentPath = ""
+	}
+
+	// Check if directory is already in PATH and remove it
+	paths := strings.Split(currentPath, ";")
+	for _, p := range paths {
+		if strings.EqualFold(strings.TrimSpace(p), strings.TrimSpace(dir)) {
+			var newPaths []string
+			for _, path := range paths {
+				if !strings.EqualFold(strings.TrimSpace(path), strings.TrimSpace(dir)) {
+					newPaths = append(newPaths, path)
+				}
+			}
+			currentPath = strings.Join(newPaths, ";")
+			break
+		}
+	}
+
+	// Prepend to PATH
+	newPath := dir
+	if currentPath != "" {
+		newPath += ";" + currentPath
+	}
+
+	if err := k.SetStringValue("Path", newPath); err != nil {
+		return fmt.Errorf("failed to update System PATH: %w", err)
+	}
+
+	return w.broadcastEnvironmentChange()
+}
+
+// RemoveFromSystemPathSingle removes a single directory from System PATH (requires admin)
+func (w *WindowsEnv) RemoveFromSystemPathSingle(dir string) error {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SYSTEM\CurrentControlSet\Control\Session Manager\Environment`, registry.QUERY_VALUE|registry.SET_VALUE)
+	if err != nil {
+		return fmt.Errorf("failed to open registry key (admin rights required): %w", err)
+	}
+	defer k.Close()
+
+	currentPath, _, err := k.GetStringValue("Path")
+	if err != nil {
+		return err
+	}
+
+	paths := strings.Split(currentPath, ";")
+	var newPaths []string
+	
+	for _, p := range paths {
+		if !strings.EqualFold(strings.TrimSpace(p), strings.TrimSpace(dir)) {
+			newPaths = append(newPaths, p)
+		}
+	}
+
+	newPath := strings.Join(newPaths, ";")
+	if err := k.SetStringValue("Path", newPath); err != nil {
+		return fmt.Errorf("failed to update System PATH: %w", err)
+	}
+
+	return w.broadcastEnvironmentChange()
+}
+
+// SetSystemJavaHome sets JAVA_HOME in System environment (requires admin)
+func (w *WindowsEnv) SetSystemJavaHome(javaPath string) error {
+	return w.SetSystemEnvironmentVariable("JAVA_HOME", javaPath)
+}
+
+// IsAdmin checks if the current process has administrator privileges
+func (w *WindowsEnv) IsAdmin() bool {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SYSTEM\CurrentControlSet\Control\Session Manager\Environment`, registry.SET_VALUE)
+	if err != nil {
+		return false
+	}
+	k.Close()
+	return true
 }
