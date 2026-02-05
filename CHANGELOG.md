@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support for Flutter SDK provider
+- Flutter SDK versions: 3.27.2, 3.27.1, 3.24.5, 3.22.3, 3.19.6, 3.16.9, 3.13.9
+- Support for "latest" version alias for Flutter installations
+- Flutter downloads from official Google Cloud Storage (flutter_infra_release)
 - Support for GraalVM Java distribution provider
 - GraalVM versions with simplified Java major version aliases (25, 21, 17)
 - GraalVM specific versions: 25.0.2, 21.0.2, 17.0.9
@@ -15,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated GraalVM download URL format to match official release naming convention
 - GraalVM now supports simplified version syntax (e.g., `unosdk install java graalvm 21`)
+- Updated CLI examples to include Flutter SDK installation
 
 ## [1.0.0] - 2026-02-05
 

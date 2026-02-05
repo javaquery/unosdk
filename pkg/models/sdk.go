@@ -6,10 +6,11 @@ import "time"
 type SDKType string
 
 const (
-	JavaSDK   SDKType = "java"
-	NodeSDK   SDKType = "node"
-	PythonSDK SDKType = "python"
-	GoSDK     SDKType = "go"
+	JavaSDK    SDKType = "java"
+	NodeSDK    SDKType = "node"
+	PythonSDK  SDKType = "python"
+	GoSDK      SDKType = "go"
+	FlutterSDK SDKType = "flutter"
 )
 
 // SDK represents an SDK installation

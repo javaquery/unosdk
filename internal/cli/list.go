@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/javaquery/unosdk/internal/providers"
+	"github.com/javaquery/unosdk/internal/providers/flutter"
 	"github.com/javaquery/unosdk/internal/providers/java"
 	"github.com/javaquery/unosdk/internal/providers/node"
 	"github.com/javaquery/unosdk/internal/providers/python"
@@ -92,6 +93,7 @@ func listAvailable() error {
 	providerRegistry.Register(java.NewGraalVMProvider())
 	providerRegistry.Register(node.NewNodeJSProvider())
 	providerRegistry.Register(python.NewPythonProvider())
+	providerRegistry.Register(flutter.NewFlutterProvider())
 
 	allProviders := providerRegistry.ListAll()
 
@@ -114,6 +116,7 @@ func listAvailable() error {
 	fmt.Println("  unosdk install java amazoncorretto 21")
 	fmt.Println("  unosdk install node nodejs latest")
 	fmt.Println("  unosdk install python python 3.12.1")
+	fmt.Println("  unosdk install flutter flutter latest")
 
 	return nil
 }

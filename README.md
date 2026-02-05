@@ -13,12 +13,13 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 
 ## Features
 
-- 🚀 **Multi-SDK Support**: Manage Java, Node.js, and Python installations from a single tool
+- 🚀 **Multi-SDK Support**: Manage Java, Node.js, Python, and Flutter installations from a single tool
 - 🔄 **Version Switching**: Easily switch between different SDK versions
 - 📦 **Multiple Providers**: Support for various distribution providers
   - Java: Amazon Corretto, OpenJDK, GraalVM
   - Node.js: Official Node.js distributions
   - Python: Official Python distributions
+  - Flutter: Official Flutter SDK
 - 🔧 **Automatic Environment Setup**: Automatically configures PATH and environment variables
 - 📋 **Registry Management**: Keeps track of all installed SDKs
 - ⚡ **Fast Downloads**: Parallel downloads with progress tracking
@@ -31,6 +32,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 | Java | Amazon Corretto, OpenJDK, GraalVM | Java Development Kit |
 | Node.js | nodejs | JavaScript runtime environment |
 | Python | python | Python programming language |
+| Flutter | flutter | Flutter SDK for mobile, web, and desktop apps |
 
 ## Installation
 
@@ -126,6 +128,12 @@ unosdk install node nodejs latest
 
 # Install specific Python version
 unosdk install python python 3.11
+
+# Install latest Flutter SDK
+unosdk install flutter flutter latest
+
+# Install specific Flutter version
+unosdk install flutter flutter 3.27.2
 
 # Install with custom path
 unosdk install java openjdk 17 --path C:\SDKs\java
