@@ -1,9 +1,13 @@
 # UnoSDK
 
-**UnoSDK** is a powerful CLI tool for Windows that simplifies the installation and management of multiple software development kits (SDKs) from various providers. Say goodbye to manual downloads, extractions, and environment variable configurations.
+**UnoSDK** is a powerful CLI tool for Windows that simplifies the installation and management of multiple software development kits (SDKs) from various providers. Think of it as **SDKMAN for Windows** - bringing the same ease of SDK management to Windows machines. Say goodbye to manual downloads, extractions, and environment variable configurations.
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://golang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+## Why UnoSDK?
+
+If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for something similar on Windows, **UnoSDK** is your answer. It provides a native Windows experience for managing multiple SDK versions without the complexity of manual installation and PATH management.
 
 ## Features
 
@@ -31,9 +35,29 @@
 ### Prerequisites
 
 - Windows OS (Windows 10 or later)
-- Administrator privileges (required for environment variable setup)
+- PowerShell 5.1 or later
 
-### Download Binary
+### Quick Installation
+
+**Automated Installation (Recommended):**
+
+Open PowerShell and run:
+
+```powershell
+irm https://raw.githubusercontent.com/javaquery/unosdk/main/scripts/install.ps1 | iex
+```
+
+This will automatically:
+- Download the latest release from GitHub
+- Install to `%LOCALAPPDATA%\unosdk`
+- Add unosdk to your PATH
+- Replace existing installation if present
+
+**To reinstall/update unosdk:**
+
+Simply run the same command again. The script will detect the existing installation and replace it with the latest version.
+
+### Manual Installation
 
 1. Go to the [releases page](https://github.com/javaquery/unosdk/releases)
 2. Download the latest `unosdk.exe` binary for Windows
@@ -41,10 +65,10 @@
 4. Add the directory to your system PATH:
 
 ```powershell
-# Open PowerShell as Administrator and run:
-$path = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+# Open PowerShell and run:
+$path = [Environment]::GetEnvironmentVariable('Path', 'User')
 $newPath = $path + ';C:\Program Files\unosdk'
-[Environment]::SetEnvironmentVariable('Path', $newPath, 'Machine')
+[Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
 ```
 
 5. Verify installation:
@@ -143,19 +167,31 @@ UnoSDK automatically manages configuration and keeps track of installed SDKs. Al
 %USERPROFILE%\.unosdk\
 ├── config.yaml          # User configuration
 ├── registry.json        # Installed SDKs registry
-└── cache/               # Cached SDK metadata
+├── cache/               # Cached SDK metadata
+└── sdks/                # Installed SDKs
 ```
 
-By default, SDKs are installed to:
+By default, SDKs are installed to `%USERPROFILE%\.unosdk\` directory:
 ```
-C:\unosdk\
+C:\Users\<username>\.unosdk\
 ├── java\
-│   ├── amazoncorretto-21\
-│   └── openjdk-17\
+│   ├── amazoncorretto\
+│   │   ├── 11\
+│   │   ├── 17\
+│   │   └── 21\
+│   └── openjdk\
+│       └── 21\
 ├── node\
-│   └── nodejs-20\
+│   └── nodejs\
+│       └── 20\
 └── python\
-    └── python-3.11\
+    └── python\
+        └── 3.11\
+```
+
+For example, Java Amazon Corretto 11 would be installed at:
+```
+C:\Users\<username>\.unosdk\java\amazoncorretto\11
 ```
 
 You can customize the installation path using the `--path` flag when installing SDKs.
@@ -220,7 +256,7 @@ A: No, UnoSDK automatically configures PATH and other necessary environment vari
 A: Yes, you can install multiple versions and switch between them using `unosdk switch`.
 
 **Q: Where are the SDKs installed?**  
-A: By default in `C:\unosdk\`, but you can specify a custom path with `--path`.
+A: By default in `%USERPROFILE%\.unosdk\` (e.g., `C:\Users\<username>\.unosdk\java\amazoncorretto\11`), but you can specify a custom path with `--path`.
 
 **Q: Is internet connection required?**  
 A: Yes, for downloading SDKs. After installation, SDKs work offline.
