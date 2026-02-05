@@ -10,26 +10,25 @@ Write-Host "  unosdk - Build Script" -ForegroundColor Cyan
 Write-Host "=====================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Get version from git or use default
-try {
-    $version = git describe --tags --always --dirty 2>$null
-    if ($LASTEXITCODE -ne 0) {
-        $version = "dev"
-    }
-} catch {
+# Get version from version.go file
+$versionFile = "pkg/version/version.go"
+$versionContent = Get-Content $versionFile -Raw
+if ($versionContent -match 'Version\s*=\s*"([^"]+)"') {
+    $version = $matches[1]
+} else {
     $version = "dev"
 }
 
 $commit = try { git rev-parse --short HEAD 2>$null } catch { "unknown" }
-$date = Get-Date -Format "yyyy-MM-dd"
+$date = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
 
 Write-Host "Version: $version" -ForegroundColor Green
 Write-Host "Commit:  $commit" -ForegroundColor Green
 Write-Host "Date:    $date" -ForegroundColor Green
 Write-Host ""
 
-# Build flags
-$ldflags = "-s -w -X main.version=$version -X main.commit=$commit -X main.date=$date"
+# Build flags - inject into version package variables
+$ldflags = "-s -w -X github.com/javaquery/unosdk/pkg/version.GitCommit=$commit -X github.com/javaquery/unosdk/pkg/version.BuildDate=$date"
 
 # Create bin directory if it doesn't exist
 if (-not (Test-Path "bin")) {

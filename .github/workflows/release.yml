@@ -1,0 +1,182 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          cache: true
+      
+      - name: Get version
+        id: version
+        shell: pwsh
+        run: |
+          # Read version from version.go
+          $versionFile = "pkg/version/version.go"
+          $content = Get-Content $versionFile -Raw
+          if ($content -match 'Version\s*=\s*"([^"]+)"') {
+            $version = "v" + $matches[1]
+          } else {
+            $version = "v0.0.0"
+          }
+          
+          # Override with workflow input if provided
+          if ($env:GITHUB_EVENT_NAME -eq "workflow_dispatch" -and "${{ github.event.inputs.version }}") {
+            $version = "${{ github.event.inputs.version }}"
+          } elseif ($env:GITHUB_REF -match 'refs/tags/') {
+            $version = $env:GITHUB_REF -replace 'refs/tags/', ''
+          }
+          
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          echo "Version: $version"
+      
+      - name: Run tests
+        run: go test -v ./...
+      
+      - name: Build for Windows AMD64
+        shell: pwsh
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        run: |
+          $version = $env:VERSION
+          $commit = git rev-parse --short HEAD
+          $date = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+          
+          $ldflags = "-s -w -X github.com/javaquery/unosdk/pkg/version.GitCommit=$commit -X github.com/javaquery/unosdk/pkg/version.BuildDate=$date"
+          
+          go build -ldflags="$ldflags" -o bin/unosdk-windows-amd64.exe ./cmd/unosdk
+          
+          echo "Built: bin/unosdk-windows-amd64.exe"
+          echo "Version: $version"
+      
+      - name: Build for Windows ARM64
+        shell: pwsh
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+          GOOS: windows
+          GOARCH: arm64
+        run: |
+          $version = $env:VERSION
+          $commit = git rev-parse --short HEAD
+          $date = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+          
+          $ldflags = "-s -w -X github.com/javaquery/unosdk/pkg/version.GitCommit=$commit -X github.com/javaquery/unosdk/pkg/version.BuildDate=$date"
+          
+          go build -ldflags="$ldflags" -o bin/unosdk-windows-arm64.exe ./cmd/unosdk
+          
+          echo "Built: bin/unosdk-windows-arm64.exe"
+      
+      - name: Create checksums
+        shell: pwsh
+        run: |
+          cd bin
+          
+          $checksums = @()
+          Get-ChildItem *.exe | ForEach-Object {
+            $hash = (Get-FileHash $_.Name -Algorithm SHA256).Hash.ToLower()
+            $checksums += "$hash  $($_.Name)"
+            Write-Host "$hash  $($_.Name)"
+          }
+          
+          $checksums | Out-File -FilePath checksums.txt -Encoding utf8
+      
+      - name: Generate release notes
+        id: release_notes
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.VERSION }}"
+          $date = Get-Date -Format "MMMM dd, yyyy"
+          
+          $notes = @"
+          ## UnoSDK $version
+          
+          Released on $date
+          
+          ### Installation
+          
+          **Quick Install (Recommended):**
+          ``````powershell
+          irm https://raw.githubusercontent.com/javaquery/unosdk/main/scripts/install.ps1 | iex
+          ``````
+          
+          **Manual Install:**
+          1. Download ``unosdk-windows-amd64.exe`` (or ``arm64`` for ARM processors)
+          2. Rename to ``unosdk.exe``
+          3. Move to a directory in your PATH (e.g., ``C:\Program Files\unosdk\``)
+          
+          ### Assets
+          
+          - ``unosdk-windows-amd64.exe`` - Windows binary (AMD64/x64)
+          - ``unosdk-windows-arm64.exe`` - Windows binary (ARM64)
+          - ``checksums.txt`` - SHA256 checksums for verification
+          
+          ### Verification
+          
+          Verify the download integrity:
+          ``````powershell
+          `$hash = (Get-FileHash unosdk-windows-amd64.exe -Algorithm SHA256).Hash.ToLower()
+          `$expected = (Get-Content checksums.txt | Select-String "amd64").Line.Split()[0]
+          if (`$hash -eq `$expected) { Write-Host "✓ Checksum verified" -ForegroundColor Green }
+          ``````
+          
+          ### What's Changed
+          
+          See the [CHANGELOG](https://github.com/javaquery/unosdk/commits/$version) for detailed changes.
+          
+          ---
+          
+          **Full Changelog**: https://github.com/javaquery/unosdk/commits/$version
+          "@
+          
+          $notes | Out-File -FilePath release_notes.md -Encoding utf8
+          
+          echo "Notes generated"
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            bin/unosdk-windows-amd64.exe
+            bin/unosdk-windows-arm64.exe
+            bin/checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: unosdk-binaries
+          path: |
+            bin/*.exe
+            bin/checksums.txt
+          retention-days: 30

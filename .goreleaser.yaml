@@ -1,0 +1,89 @@
+version: 2
+
+project_name: unosdk
+
+before:
+  hooks:
+    - go mod download
+    - go mod verify
+
+builds:
+  - id: unosdk
+    main: ./cmd/unosdk
+    binary: unosdk
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/javaquery/unosdk/pkg/version.GitCommit={{.ShortCommit}}
+      - -X github.com/javaquery/unosdk/pkg/version.BuildDate={{.Date}}
+
+archives:
+  - id: default
+    format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - 'merge conflict'
+      - Merge pull request
+      - Merge remote-tracking branch
+      - Merge branch
+  groups:
+    - title: 'New Features'
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug Fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: 'Performance Improvements'
+      regexp: "^.*perf[(\\w)]*:+.*$"
+      order: 2
+    - title: 'Refactors'
+      regexp: "^.*refactor[(\\w)]*:+.*$"
+      order: 3
+    - title: 'Documentation'
+      regexp: "^.*docs[(\\w)]*:+.*$"
+      order: 4
+    - title: 'Other Changes'
+      order: 999
+
+release:
+  draft: false
+  prerelease: auto
+  name_template: "Release {{.Version}}"
+  footer: |
+    ## Installation
+    
+    **Quick Install (Recommended):**
+    ```powershell
+    irm https://raw.githubusercontent.com/javaquery/unosdk/main/scripts/install.ps1 | iex
+    ```
+    
+    **Manual Install:**
+    1. Download the appropriate ZIP file for your architecture
+    2. Extract `unosdk.exe`
+    3. Move to a directory in your PATH
+    
+    **Verify Installation:**
+    ```powershell
+    unosdk version
+    ```

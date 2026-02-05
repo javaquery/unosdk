@@ -6,12 +6,7 @@ import (
 
 	"github.com/javaquery/unosdk/internal/cli"
 	"github.com/javaquery/unosdk/pkg/utils"
-)
-
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
+	"github.com/javaquery/unosdk/pkg/version"
 )
 
 func main() {
@@ -19,8 +14,8 @@ func main() {
 	logger := utils.NewLogger()
 	defer logger.Sync()
 
-	// Set version info
-	cli.SetVersionInfo(version, commit, date)
+	// Set version info from version package
+	cli.SetVersionInfo(version.Version, version.GitCommit, version.BuildDate)
 
 	// Execute CLI
 	if err := cli.Execute(); err != nil {

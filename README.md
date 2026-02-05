@@ -3,6 +3,8 @@
 **UnoSDK** is a powerful CLI tool for Windows that simplifies the installation and management of multiple software development kits (SDKs) from various providers. Think of it as **SDKMAN for Windows** - bringing the same ease of SDK management to Windows machines. Say goodbye to manual downloads, extractions, and environment variable configurations.
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://golang.org/)
+[![Release](https://img.shields.io/github/v/release/javaquery/unosdk?style=flat&logo=github)](https://github.com/javaquery/unosdk/releases/latest)
+[![CI](https://github.com/javaquery/unosdk/actions/workflows/ci.yml/badge.svg)](https://github.com/javaquery/unosdk/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Why UnoSDK?
@@ -297,10 +299,27 @@ git clone https://github.com/javaquery/unosdk.git
 cd unosdk
 
 # Build the project (requires Go 1.21+)
-go build -o bin/unosdk.exe cmd/unosdk/main.go
-
-# Or use the build script
 .\scripts\build.ps1
+
+# Run tests
+go test ./...
+```
+
+### Version Management
+
+To update the version, simply edit `pkg/version/version.go`:
+
+```go
+const Version = "1.2.0"  // Change this line
+```
+
+Then build and release:
+
+```powershell
+.\scripts\build.ps1
+git commit -am "bump version to 1.2.0"
+git tag v1.2.0
+git push origin main --tags
 ```
 
 ### Dependencies

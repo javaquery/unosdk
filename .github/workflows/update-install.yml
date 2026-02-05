@@ -1,0 +1,60 @@
+name: Update Install Script
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-script:
+    name: Update install script asset reference
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Get latest release info
+        id: release
+        shell: pwsh
+        run: |
+          $release = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest"
+          $version = $release.tag_name
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          echo "Latest version: $version"
+      
+      - name: Update README with latest version badge
+        shell: pwsh
+        run: |
+          $version = "${{ steps.release.outputs.VERSION }}"
+          $content = Get-Content README.md -Raw
+          
+          # Update version badge if exists
+          if ($content -match '\[!\[Release\].*\]\(.*\)') {
+            $badge = "[![Release](https://img.shields.io/github/v/release/javaquery/unosdk?style=flat&logo=github)](https://github.com/javaquery/unosdk/releases/latest)"
+            $content = $content -replace '\[!\[Release\].*\]\(.*\)', $badge
+            Set-Content README.md -Value $content
+            echo "Updated version badge to $version"
+          }
+      
+      - name: Commit and push if changed
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add README.md
+          
+          if (git diff --staged --quiet) {
+            echo "No changes to commit"
+          } else {
+            git commit -m "docs: update version badge to ${{ steps.release.outputs.VERSION }}"
+            git push
+            echo "Changes committed and pushed"
+          }
