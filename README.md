@@ -17,7 +17,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 
 ## Features
 
-- 🚀 **Multi-SDK Support**: Manage Java, Node.js, Python, and Flutter installations from a single tool
+- 🚀 **Multi-SDK Support**: Manage Java, Node.js, Python, Flutter, Maven, Gradle, and Go installations from a single tool
 - 🔄 **Version Switching**: Easily switch between different SDK versions
 - 📦 **Multiple Providers**: Support for various distribution providers
   - Java: Amazon Corretto, OpenJDK, GraalVM
@@ -282,27 +282,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Roadmap
-
-- [x] Add support for GraalVM
-- [ ] Add support for more SDK providers (Adoptium, etc.)
-- [ ] Cross-platform support (Linux, macOS)
-- [ ] GUI interface
-- [ ] Automatic version detection from project files
-- [ ] SDK cleanup and maintenance commands
-- [ ] Integration with common build tools
-
-## Support
-
-For issues, questions, or contributions, please visit the [GitHub repository](https://github.com/javaquery/unosdk).
-
 ## Acknowledgments
 
-Special thanks to all the SDK providers for making their distributions available.FAQ
+Special thanks to all the SDK providers for making their distributions available.
+
+## FAQ
 
 **Q: Do I need to manually configure environment variables?**  
 A: No, UnoSDK automatically configures PATH and other necessary environment variables.
@@ -328,15 +312,6 @@ A: Yes, but be aware of potential PATH conflicts. UnoSDK manages its own install
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Roadmap
-
-- [ ] Add support for more SDK providers (GraalVM, Adoptium, etc.)
-- [ ] Cross-platform support (Linux, macOS)
-- [ ] GUI interface
-- [ ] Automatic version detection from project files
-- [ ] SDK cleanup and maintenance commands
-- [ ] Integration with common build tools
 
 ---
 

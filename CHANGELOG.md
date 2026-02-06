@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2026-02-06
 
 ### Added
 - Support for Maven SDK provider (Apache Maven)
@@ -16,31 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Go versions: 1.23.5, 1.23.4, 1.23.3, 1.23.2, 1.23.1, 1.23.0, 1.22.x series, 1.21.x series
 - Support for Flutter SDK provider
 - Flutter SDK versions: 3.27.2, 3.27.1, 3.24.5, 3.22.3, 3.19.6, 3.16.9, 3.13.9
-- Support for "latest" version alias for Flutter installations
-- Flutter downloads from official Google Cloud Storage (flutter_infra_release)
 - Support for GraalVM Java distribution provider
 - GraalVM versions with simplified Java major version aliases (25, 21, 17)
 - GraalVM specific versions: 25.0.2, 21.0.2, 17.0.9
-- PATH environment variable support for Maven SDK (setup, cleanup, and conflict detection)
-- PATH environment variable support for Gradle SDK (setup, cleanup, and conflict detection)
-- PATH environment variable support for Go SDK (setup, cleanup, and conflict detection)
-- PATH environment variable support for Flutter SDK (setup, cleanup, and conflict detection)
-- System PATH conflict detection for Maven installations
-- System PATH conflict detection for Gradle installations
-- System PATH conflict detection for Go installations
-- System PATH conflict detection for Flutter installations
-
-### Changed
-- Updated GraalVM download URL format to match official release naming convention
-- GraalVM now supports simplified version syntax (e.g., `unosdk install java graalvm 21`)
-- Updated CLI examples to include Flutter SDK installation
-- Maven download URLs now correctly include `/binaries/` directory path
-
-### Fixed
-- Fixed syntax errors in install.go caused by duplicate struct closing statements
-- Fixed syntax errors in switch.go caused by duplicate struct closing statements
-- Fixed Maven PATH not being updated after installation - now properly prepends to User and System PATH
-- Fixed Flutter PATH not being updated after installation - now properly prepends to User and System PATH
 
 ## [1.0.0] - 2026-02-05
 
@@ -62,4 +40,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuration management via `sdks.yaml`
 - Cross-platform support (Windows, macOS, Linux)
 
+[1.1.0]: https://github.com/javaquery/unosdk/releases/tag/v1.1.0
 [1.0.0]: https://github.com/javaquery/unosdk/releases/tag/v1.0.0
