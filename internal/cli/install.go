@@ -9,6 +9,7 @@ import (
 	"github.com/javaquery/unosdk/internal/installer"
 	"github.com/javaquery/unosdk/internal/providers"
 	"github.com/javaquery/unosdk/internal/providers/flutter"
+	"github.com/javaquery/unosdk/internal/providers/go"
 	"github.com/javaquery/unosdk/internal/providers/gradle"
 	"github.com/javaquery/unosdk/internal/providers/java"
 	"github.com/javaquery/unosdk/internal/providers/maven"
@@ -52,6 +53,9 @@ Examples:
   # Install Gradle
   unosdk install gradle gradle 8.12
 
+  # Install Go
+  unosdk install go golang 1.23.5
+
   # Install with custom architecture
   unosdk install java openjdk 21 --arch x64`,
 	Args: cobra.ExactArgs(3),
@@ -82,6 +86,7 @@ func runInstall(cmd *cobra.Command, args []string) error {
 	providerRegistry.Register(flutter.NewFlutterProvider())
 	providerRegistry.Register(maven.NewMavenProvider())
 	providerRegistry.Register(gradle.NewGradleProvider())
+	providerRegistry.Register(golang.NewGoProvider())
 
 	// Initialize installer
 	inst := installer.NewInstaller(providerRegistry)

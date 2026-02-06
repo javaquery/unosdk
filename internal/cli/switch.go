@@ -31,7 +31,10 @@ Examples:
   unosdk switch maven apache 3.9.9
 
   # Switch to Gradle 8.12
-  unosdk switch gradle gradle 8.12`,
+  unosdk switch gradle gradle 8.12
+
+  # Switch to Go 1.23.5
+  unosdk switch go golang 1.23.5`,
 	Args: cobra.ExactArgs(3),
 	RunE: runSwitch,
 }
@@ -47,7 +50,7 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 
 	// Validate SDK type
 	if !isValidSDKType(sdkType) {
-		return fmt.Errorf("invalid SDK type: %s (valid types: java, node, python, maven, gradle, flutter)", sdkType)
+		return fmt.Errorf("invalid SDK type: %s (valid types: java, node, python, go, maven, gradle, flutter)", sdkType)
 	}
 
 	// Initialize registry
@@ -95,7 +98,7 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 // isValidSDKType checks if the SDK type is valid
 func isValidSDKType(sdkType models.SDKType) bool {
 	switch sdkType {
-	case models.JavaSDK, models.NodeSDK, models.PythonSDK, models.MavenSDK, models.GradleSDK, models.FlutterSDK:
+	case models.JavaSDK, models.NodeSDK, models.PythonSDK, models.GoSDK, models.MavenSDK, models.GradleSDK, models.FlutterSDK:
 		return true
 	default:
 		return false

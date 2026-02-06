@@ -256,6 +256,14 @@ func (w *WindowsEnv) DetectSDKConflicts(sdkType string) []string {
 			if strings.Contains(pLower, "gradle") && strings.Contains(pLower, "bin") {
 				conflicts = append(conflicts, pTrimmed)
 			}
+		case "go":
+			// Check for common Go installation paths (excluding unosdk)
+			if strings.Contains(pLower, "unosdk") {
+				continue // Skip our own installations
+			}
+			if strings.Contains(pLower, "go") && strings.Contains(pLower, "bin") {
+				conflicts = append(conflicts, pTrimmed)
+			}
 		}
 	}
 	

@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/javaquery/unosdk/internal/providers"
 	"github.com/javaquery/unosdk/internal/providers/flutter"
+	"github.com/javaquery/unosdk/internal/providers/go"
 	"github.com/javaquery/unosdk/internal/providers/gradle"
 	"github.com/javaquery/unosdk/internal/providers/java"
 	"github.com/javaquery/unosdk/internal/providers/maven"
@@ -98,6 +99,7 @@ func listAvailable() error {
 	providerRegistry.Register(flutter.NewFlutterProvider())
 	providerRegistry.Register(maven.NewMavenProvider())
 	providerRegistry.Register(gradle.NewGradleProvider())
+	providerRegistry.Register(golang.NewGoProvider())
 
 	allProviders := providerRegistry.ListAll()
 

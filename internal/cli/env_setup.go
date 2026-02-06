@@ -67,6 +67,13 @@ func cleanupExistingSDKPaths(reg *registry.Registry, sdk *models.SDK) error {
 			if isAdmin {
 				_ = env.RemoveFromSystemPathSingle(binPath)
 			}
+
+		case models.GoSDK:
+			// Remove Go bin and go/bin from PATH
+			_ = env.RemoveFromPath(installedSDK.InstallPath + "\\bin")
+			if isAdmin {
+				_ = env.RemoveFromSystemPathSingle(installedSDK.InstallPath + "\\bin")
+			}
 		}
 	}
 
@@ -99,6 +106,9 @@ func checkSystemPathConflicts(sdk *models.SDK) {
 	case models.GradleSDK:
 		sdkTypeName = "gradle"
 		displayName = "Gradle"
+	case models.GoSDK:
+		sdkTypeName = "go"
+		displayName = "Go"
 	default:
 		return
 	}
@@ -270,6 +280,25 @@ func setupSDKEnvironment(sdk *models.SDK, setJavaHome bool) error {
 		}
 
 	case models.GradleSDK:
+		// Add bin directory to PATH
+		binPath := sdk.InstallPath + "\\bin"
+		
+		// Add to User PATH
+		if err := env.AddToPath(binPath); err != nil {
+			return fmt.Errorf("failed to add to User PATH: %w", err)
+		}
+		fmt.Println("  Added to User PATH: " + binPath)
+		
+		// Also add to System PATH if running as admin
+		if isAdmin {
+			if err := env.AddToSystemPath(binPath); err != nil {
+				fmt.Printf("  ⚠ Failed to add to System PATH: %v\n", err)
+			} else {
+				fmt.Println("  Added to System PATH: " + binPath)
+			}
+		}
+
+	case models.GoSDK:
 		// Add bin directory to PATH
 		binPath := sdk.InstallPath + "\\bin"
 		

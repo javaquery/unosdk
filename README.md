@@ -26,6 +26,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
   - Flutter: Official Flutter SDK
   - Maven: Apache Maven build tool
   - Gradle: Gradle build automation tool
+  - Go: Official Go programming language
 - 🔧 **Automatic Environment Setup**: Automatically configures PATH and environment variables
 - 📋 **Registry Management**: Keeps track of all installed SDKs
 - ⚡ **Fast Downloads**: Parallel downloads with progress tracking
@@ -41,6 +42,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 | Flutter | flutter | Flutter SDK for mobile, web, and desktop apps |
 | Maven | apache | Apache Maven build automation tool |
 | Gradle | gradle | Gradle build automation tool |
+| Go | golang | Go programming language |
 
 ## Installation
 
@@ -155,6 +157,12 @@ unosdk install gradle gradle 8.12
 # Install specific Gradle version
 unosdk install gradle gradle 8.10
 
+# Install Go
+unosdk install go golang 1.23.5
+
+# Install specific Go version
+unosdk install go golang 1.22.10
+
 # Install with custom path
 unosdk install java openjdk 17 --path C:\SDKs\java
 
@@ -176,6 +184,9 @@ unosdk switch node nodejs 20
 
 # Switch to a different Gradle version
 unosdk switch gradle gradle 8.12
+
+# Switch to a different Go version
+unosdk switch go golang 1.23.5
 ```
 
 ### Uninstall SDKs
@@ -225,8 +236,11 @@ C:\Users\<username>\.unosdk\
 │       └── 3.11\
 ├── maven\
 │   └── 3.9.9\
-└── gradle\
-    └── 8.12\
+├── gradle\
+│   └── 8.12\
+└── go\
+    └── golang\
+        └── 1.23.5\
 ```
 
 For example, Java Amazon Corretto 11 would be installed at:

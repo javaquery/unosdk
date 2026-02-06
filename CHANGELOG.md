@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Maven versions: 3.9.9, 3.9.8, 3.9.7, 3.9.6, 3.8.8, 3.8.7, 3.8.6, 3.6.3
 - Support for Gradle SDK provider
 - Gradle versions: 8.12, 8.11.1, 8.11, 8.10.2, 8.10.1, 8.10, 8.9, 8.8, 8.7, 8.6, 8.5, 8.4, 8.3, 8.2.1, 8.2, 8.1.1, 8.1, 8.0.2, 8.0.1, 8.0, 7.6.4, 7.6.3, 7.6.2, 7.6.1, 7.6
+- Support for Go programming language provider
+- Go versions: 1.23.5, 1.23.4, 1.23.3, 1.23.2, 1.23.1, 1.23.0, 1.22.x series, 1.21.x series
 - Support for Flutter SDK provider
 - Flutter SDK versions: 3.27.2, 3.27.1, 3.24.5, 3.22.3, 3.19.6, 3.16.9, 3.13.9
 - Support for "latest" version alias for Flutter installations
@@ -21,9 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GraalVM specific versions: 25.0.2, 21.0.2, 17.0.9
 - PATH environment variable support for Maven SDK (setup, cleanup, and conflict detection)
 - PATH environment variable support for Gradle SDK (setup, cleanup, and conflict detection)
+- PATH environment variable support for Go SDK (setup, cleanup, and conflict detection)
 - PATH environment variable support for Flutter SDK (setup, cleanup, and conflict detection)
 - System PATH conflict detection for Maven installations
 - System PATH conflict detection for Gradle installations
+- System PATH conflict detection for Go installations
 - System PATH conflict detection for Flutter installations
 
 ### Changed
