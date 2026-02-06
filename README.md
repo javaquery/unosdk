@@ -24,6 +24,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
   - Node.js: Official Node.js distributions
   - Python: Official Python distributions
   - Flutter: Official Flutter SDK
+  - Maven: Apache Maven build tool
 - 🔧 **Automatic Environment Setup**: Automatically configures PATH and environment variables
 - 📋 **Registry Management**: Keeps track of all installed SDKs
 - ⚡ **Fast Downloads**: Parallel downloads with progress tracking
@@ -37,6 +38,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 | Node.js | nodejs | JavaScript runtime environment |
 | Python | python | Python programming language |
 | Flutter | flutter | Flutter SDK for mobile, web, and desktop apps |
+| Maven | apache | Apache Maven build automation tool |
 
 ## Installation
 
@@ -139,6 +141,12 @@ unosdk install flutter flutter latest
 # Install specific Flutter version
 unosdk install flutter flutter 3.27.2
 
+# Install Apache Maven
+unosdk install maven apache 3.9.9
+
+# Install specific Maven version
+unosdk install maven apache 3.8.8
+
 # Install with custom path
 unosdk install java openjdk 17 --path C:\SDKs\java
 
@@ -201,9 +209,11 @@ C:\Users\<username>\.unosdk\
 ├── node\
 │   └── nodejs\
 │       └── 20\
-└── python\
-    └── python\
-        └── 3.11\
+├── python\
+│   └── python\
+│       └── 3.11\
+└── maven\
+    └── 3.9.9\
 ```
 
 For example, Java Amazon Corretto 11 would be installed at:

@@ -11,6 +11,7 @@ const (
 	PythonSDK  SDKType = "python"
 	GoSDK      SDKType = "go"
 	FlutterSDK SDKType = "flutter"
+	MavenSDK   SDKType = "maven"
 )
 
 // SDK represents an SDK installation

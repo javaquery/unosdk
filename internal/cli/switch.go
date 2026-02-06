@@ -25,7 +25,10 @@ Examples:
   unosdk switch node nodejs 20.10.0
 
   # Switch to Python 3.12.1
-  unosdk switch python python 3.12.1`,
+  unosdk switch python python 3.12.1
+  
+  # Switch to Maven 3.9.9
+  unosdk switch maven apache 3.9.9`,
 	Args: cobra.ExactArgs(3),
 	RunE: runSwitch,
 }
@@ -41,7 +44,7 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 
 	// Validate SDK type
 	if !isValidSDKType(sdkType) {
-		return fmt.Errorf("invalid SDK type: %s (valid types: java, node, python)", sdkType)
+		return fmt.Errorf("invalid SDK type: %s (valid types: java, node, python, maven, flutter)", sdkType)
 	}
 
 	// Initialize registry
@@ -89,7 +92,7 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 // isValidSDKType checks if the SDK type is valid
 func isValidSDKType(sdkType models.SDKType) bool {
 	switch sdkType {
-	case models.JavaSDK, models.NodeSDK, models.PythonSDK:
+	case models.JavaSDK, models.NodeSDK, models.PythonSDK, models.MavenSDK, models.FlutterSDK:
 		return true
 	default:
 		return false

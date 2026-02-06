@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support for Maven SDK provider (Apache Maven)
+- Maven versions: 3.9.9, 3.9.8, 3.9.7, 3.9.6, 3.8.8, 3.8.7, 3.8.6, 3.6.3
 - Support for Flutter SDK provider
 - Flutter SDK versions: 3.27.2, 3.27.1, 3.24.5, 3.22.3, 3.19.6, 3.16.9, 3.13.9
 - Support for "latest" version alias for Flutter installations
@@ -15,11 +17,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for GraalVM Java distribution provider
 - GraalVM versions with simplified Java major version aliases (25, 21, 17)
 - GraalVM specific versions: 25.0.2, 21.0.2, 17.0.9
+- PATH environment variable support for Maven SDK (setup, cleanup, and conflict detection)
+- PATH environment variable support for Flutter SDK (setup, cleanup, and conflict detection)
+- System PATH conflict detection for Maven installations
+- System PATH conflict detection for Flutter installations
 
 ### Changed
 - Updated GraalVM download URL format to match official release naming convention
 - GraalVM now supports simplified version syntax (e.g., `unosdk install java graalvm 21`)
 - Updated CLI examples to include Flutter SDK installation
+- Maven download URLs now correctly include `/binaries/` directory path
+
+### Fixed
+- Fixed syntax errors in install.go caused by duplicate struct closing statements
+- Fixed syntax errors in switch.go caused by duplicate struct closing statements
+- Fixed Maven PATH not being updated after installation - now properly prepends to User and System PATH
+- Fixed Flutter PATH not being updated after installation - now properly prepends to User and System PATH
 
 ## [1.0.0] - 2026-02-05
 

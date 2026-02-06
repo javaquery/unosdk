@@ -28,6 +28,7 @@ Supported SDKs:
   - Java (Amazon Corretto, OpenJDK)
   - Node.js
   - Python
+  - Maven (Apache Maven)
 
 Examples:
   # Install Amazon Corretto Java 21
@@ -35,6 +36,9 @@ Examples:
 
   # Install latest Node.js
   unosdk install node nodejs latest
+
+  # Install Apache Maven
+  unosdk install maven apache 3.9.9
 
   # Switch to a different Java version
   unosdk switch java openjdk 21

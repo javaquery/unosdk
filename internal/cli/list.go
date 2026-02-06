@@ -9,6 +9,7 @@ import (
 	"github.com/javaquery/unosdk/internal/providers"
 	"github.com/javaquery/unosdk/internal/providers/flutter"
 	"github.com/javaquery/unosdk/internal/providers/java"
+	"github.com/javaquery/unosdk/internal/providers/maven"
 	"github.com/javaquery/unosdk/internal/providers/node"
 	"github.com/javaquery/unosdk/internal/providers/python"
 	"github.com/javaquery/unosdk/internal/registry"
@@ -94,6 +95,7 @@ func listAvailable() error {
 	providerRegistry.Register(node.NewNodeJSProvider())
 	providerRegistry.Register(python.NewPythonProvider())
 	providerRegistry.Register(flutter.NewFlutterProvider())
+	providerRegistry.Register(maven.NewMavenProvider())
 
 	allProviders := providerRegistry.ListAll()
 

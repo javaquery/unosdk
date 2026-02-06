@@ -46,6 +46,20 @@ func cleanupExistingSDKPaths(reg *registry.Registry, sdk *models.SDK) error {
 				_ = env.RemoveFromSystemPathSingle(installedSDK.InstallPath)
 				_ = env.RemoveFromSystemPathSingle(scriptsPath)
 			}
+
+		case models.MavenSDK:
+			binPath := installedSDK.InstallPath + "\\bin"
+			_ = env.RemoveFromPath(binPath)
+			if isAdmin {
+				_ = env.RemoveFromSystemPathSingle(binPath)
+			}
+
+		case models.FlutterSDK:
+			binPath := installedSDK.InstallPath + "\\bin"
+			_ = env.RemoveFromPath(binPath)
+			if isAdmin {
+				_ = env.RemoveFromSystemPathSingle(binPath)
+			}
 		}
 	}
 
@@ -69,6 +83,12 @@ func checkSystemPathConflicts(sdk *models.SDK) {
 	case models.PythonSDK:
 		sdkTypeName = "python"
 		displayName = "Python"
+	case models.MavenSDK:
+		sdkTypeName = "maven"
+		displayName = "Maven"
+	case models.FlutterSDK:
+		sdkTypeName = "flutter"
+		displayName = "Flutter"
 	default:
 		return
 	}
@@ -198,6 +218,44 @@ func setupSDKEnvironment(sdk *models.SDK, setJavaHome bool) error {
 				fmt.Printf("  ⚠ Failed to add Scripts to System PATH: %v\n", err)
 			} else {
 				fmt.Println("  Added to System PATH: " + scriptsPath)
+			}
+		}
+
+	case models.MavenSDK:
+		// Add bin directory to PATH
+		binPath := sdk.InstallPath + "\\bin"
+		
+		// Add to User PATH
+		if err := env.AddToPath(binPath); err != nil {
+			return fmt.Errorf("failed to add to User PATH: %w", err)
+		}
+		fmt.Println("  Added to User PATH: " + binPath)
+		
+		// Also add to System PATH if running as admin
+		if isAdmin {
+			if err := env.AddToSystemPath(binPath); err != nil {
+				fmt.Printf("  ⚠ Failed to add to System PATH: %v\n", err)
+			} else {
+				fmt.Println("  Added to System PATH: " + binPath)
+			}
+		}
+
+	case models.FlutterSDK:
+		// Add bin directory to PATH
+		binPath := sdk.InstallPath + "\\bin"
+		
+		// Add to User PATH
+		if err := env.AddToPath(binPath); err != nil {
+			return fmt.Errorf("failed to add to User PATH: %w", err)
+		}
+		fmt.Println("  Added to User PATH: " + binPath)
+		
+		// Also add to System PATH if running as admin
+		if isAdmin {
+			if err := env.AddToSystemPath(binPath); err != nil {
+				fmt.Printf("  ⚠ Failed to add to System PATH: %v\n", err)
+			} else {
+				fmt.Println("  Added to System PATH: " + binPath)
 			}
 		}
 	}

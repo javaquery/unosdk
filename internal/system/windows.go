@@ -232,6 +232,22 @@ func (w *WindowsEnv) DetectSDKConflicts(sdkType string) []string {
 			    strings.Contains(pLower, "appdata") || strings.Contains(pLower, "scripts")) {
 				conflicts = append(conflicts, pTrimmed)
 			}
+		case "maven":
+			// Check for common Maven installation paths (excluding unosdk)
+			if strings.Contains(pLower, "unosdk") {
+				continue // Skip our own installations
+			}
+			if strings.Contains(pLower, "maven") && strings.Contains(pLower, "bin") {
+				conflicts = append(conflicts, pTrimmed)
+			}
+		case "flutter":
+			// Check for common Flutter installation paths (excluding unosdk)
+			if strings.Contains(pLower, "unosdk") {
+				continue // Skip our own installations
+			}
+			if strings.Contains(pLower, "flutter") && strings.Contains(pLower, "bin") {
+				conflicts = append(conflicts, pTrimmed)
+			}
 		}
 	}
 	
