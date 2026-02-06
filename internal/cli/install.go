@@ -9,6 +9,7 @@ import (
 	"github.com/javaquery/unosdk/internal/installer"
 	"github.com/javaquery/unosdk/internal/providers"
 	"github.com/javaquery/unosdk/internal/providers/flutter"
+	"github.com/javaquery/unosdk/internal/providers/gradle"
 	"github.com/javaquery/unosdk/internal/providers/java"
 	"github.com/javaquery/unosdk/internal/providers/maven"
 	"github.com/javaquery/unosdk/internal/providers/node"
@@ -48,6 +49,9 @@ Examples:
   # Install Apache Maven
   unosdk install maven apache 3.9.9
 
+  # Install Gradle
+  unosdk install gradle gradle 8.12
+
   # Install with custom architecture
   unosdk install java openjdk 21 --arch x64`,
 	Args: cobra.ExactArgs(3),
@@ -77,6 +81,7 @@ func runInstall(cmd *cobra.Command, args []string) error {
 	providerRegistry.Register(python.NewPythonProvider())
 	providerRegistry.Register(flutter.NewFlutterProvider())
 	providerRegistry.Register(maven.NewMavenProvider())
+	providerRegistry.Register(gradle.NewGradleProvider())
 
 	// Initialize installer
 	inst := installer.NewInstaller(providerRegistry)

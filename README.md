@@ -25,6 +25,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
   - Python: Official Python distributions
   - Flutter: Official Flutter SDK
   - Maven: Apache Maven build tool
+  - Gradle: Gradle build automation tool
 - 🔧 **Automatic Environment Setup**: Automatically configures PATH and environment variables
 - 📋 **Registry Management**: Keeps track of all installed SDKs
 - ⚡ **Fast Downloads**: Parallel downloads with progress tracking
@@ -39,6 +40,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 | Python | python | Python programming language |
 | Flutter | flutter | Flutter SDK for mobile, web, and desktop apps |
 | Maven | apache | Apache Maven build automation tool |
+| Gradle | gradle | Gradle build automation tool |
 
 ## Installation
 
@@ -147,6 +149,12 @@ unosdk install maven apache 3.9.9
 # Install specific Maven version
 unosdk install maven apache 3.8.8
 
+# Install Gradle
+unosdk install gradle gradle 8.12
+
+# Install specific Gradle version
+unosdk install gradle gradle 8.10
+
 # Install with custom path
 unosdk install java openjdk 17 --path C:\SDKs\java
 
@@ -165,6 +173,9 @@ unosdk switch java openjdk 21
 
 # Switch to a different Node.js version
 unosdk switch node nodejs 20
+
+# Switch to a different Gradle version
+unosdk switch gradle gradle 8.12
 ```
 
 ### Uninstall SDKs
@@ -212,8 +223,10 @@ C:\Users\<username>\.unosdk\
 ├── python\
 │   └── python\
 │       └── 3.11\
-└── maven\
-    └── 3.9.9\
+├── maven\
+│   └── 3.9.9\
+└── gradle\
+    └── 8.12\
 ```
 
 For example, Java Amazon Corretto 11 would be installed at:

@@ -248,6 +248,14 @@ func (w *WindowsEnv) DetectSDKConflicts(sdkType string) []string {
 			if strings.Contains(pLower, "flutter") && strings.Contains(pLower, "bin") {
 				conflicts = append(conflicts, pTrimmed)
 			}
+		case "gradle":
+			// Check for common Gradle installation paths (excluding unosdk)
+			if strings.Contains(pLower, "unosdk") {
+				continue // Skip our own installations
+			}
+			if strings.Contains(pLower, "gradle") && strings.Contains(pLower, "bin") {
+				conflicts = append(conflicts, pTrimmed)
+			}
 		}
 	}
 	
