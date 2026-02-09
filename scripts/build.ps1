@@ -27,6 +27,10 @@ Write-Host "Commit:  $commit" -ForegroundColor Green
 Write-Host "Date:    $date" -ForegroundColor Green
 Write-Host ""
 
+# Clear any existing GOOS/GOARCH environment variables to ensure tests run on native architecture
+Remove-Item Env:\GOOS -ErrorAction SilentlyContinue
+Remove-Item Env:\GOARCH -ErrorAction SilentlyContinue
+
 # Run tests before building
 Write-Host "Running tests..." -ForegroundColor Yellow
 go test ./...
@@ -93,6 +97,10 @@ if ($LASTEXITCODE -eq 0) {
 
 # Create default copy
 Copy-Item "bin/unosdk-amd64.exe" "bin/unosdk.exe"
+
+# Clean up environment variables
+Remove-Item Env:\GOOS -ErrorAction SilentlyContinue
+Remove-Item Env:\GOARCH -ErrorAction SilentlyContinue
 
 Write-Host ""
 Write-Host "=====================================" -ForegroundColor Cyan
