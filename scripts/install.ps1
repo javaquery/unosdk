@@ -93,7 +93,7 @@ function Add-ToPath {
 
 # Check if unosdk is already installed
 $existingInstall = $false
-if (Test-Path "$InstallPath\unosdk.exe") {
+if (Test-Path -LiteralPath "$InstallPath\unosdk.exe") {
     $existingInstall = $true
     Write-Host "[!] Found existing installation at: $InstallPath" -ForegroundColor Yellow
     
@@ -134,7 +134,7 @@ try {
     Write-Host "  URL: $downloadUrl" -ForegroundColor Gray
     
     # Create installation directory
-    if (-not (Test-Path $InstallPath)) {
+    if (-not (Test-Path -LiteralPath $InstallPath)) {
         New-Item -ItemType Directory -Path $InstallPath -Force | Out-Null
         Write-Host "[OK] Created installation directory: $InstallPath" -ForegroundColor Green
     }
@@ -143,8 +143,8 @@ try {
     $tempFile = Join-Path $env:TEMP "unosdk_download.exe"
     
     # Remove old temp file if exists
-    if (Test-Path $tempFile) {
-        Remove-Item $tempFile -Force -ErrorAction SilentlyContinue
+    if (Test-Path -LiteralPath $tempFile) {
+        Remove-Item -LiteralPath $tempFile -Force -ErrorAction SilentlyContinue
     }
     
     Write-Host "[*] Downloading to: $tempFile" -ForegroundColor Gray
@@ -160,14 +160,14 @@ try {
     }
     
     # Verify the download was successful
-    if (-not (Test-Path $tempFile)) {
+    if (-not (Test-Path -LiteralPath $tempFile)) {
         Write-Host "[ERROR] Downloaded file not found at: $tempFile" -ForegroundColor Red
         Write-Host "[ERROR] The download may have failed silently." -ForegroundColor Red
         Wait-ForKeyPress "Press any key to exit..."
         exit 1
     }
     
-    $fileSize = (Get-Item $tempFile).Length
+    $fileSize = (Get-Item -LiteralPath $tempFile).Length
     if ($fileSize -eq 0) {
         Write-Host "[ERROR] Downloaded file is empty (0 bytes)" -ForegroundColor Red
         Wait-ForKeyPress "Press any key to exit..."
@@ -190,24 +190,26 @@ try {
     Write-Host "[*] Installing to: $targetPath" -ForegroundColor Gray
     
     # Verify source file exists before moving
-    if (-not (Test-Path $tempFile)) {
+    if (-not (Test-Path -LiteralPath $tempFile)) {
         Write-Host "[ERROR] Source file disappeared: $tempFile" -ForegroundColor Red
         Wait-ForKeyPress "Press any key to exit..."
         exit 1
     }
     
     try {
-        Move-Item -Path $tempFile -Destination $targetPath -Force -ErrorAction Stop
+        Move-Item -LiteralPath $tempFile -Destination $targetPath -Force -ErrorAction Stop
     } catch {
         Write-Host "[ERROR] Failed to move file to installation directory" -ForegroundColor Red
         Write-Host "[ERROR] Details: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "[ERROR] Source: $tempFile" -ForegroundColor Yellow
+        Write-Host "[ERROR] Target: $targetPath" -ForegroundColor Yellow
         Write-Host "[ERROR] You may need to run as Administrator or check folder permissions" -ForegroundColor Yellow
         Wait-ForKeyPress "Press any key to exit..."
         exit 1
     }
     
     # Verify installation succeeded
-    if (-not (Test-Path $targetPath)) {
+    if (-not (Test-Path -LiteralPath $targetPath)) {
         Write-Host "[ERROR] Installation verification failed - file not found at: $targetPath" -ForegroundColor Red
         Wait-ForKeyPress "Press any key to exit..."
         exit 1
