@@ -16,6 +16,32 @@ function Wait-ForKeyPress {
     $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 }
 
+# Function to convert short 8.3 paths to full paths
+function Get-LongPath {
+    param([string]$Path)
+    
+    try {
+        # If path doesn't exist, try to create parent directories
+        $parent = Split-Path $Path -Parent
+        if ($parent -and -not (Test-Path -LiteralPath $parent)) {
+            New-Item -ItemType Directory -Path $parent -Force -ErrorAction SilentlyContinue | Out-Null
+        }
+        
+        # Get the full path
+        $fullPath = [System.IO.Path]::GetFullPath($Path)
+        
+        # Convert short names to long names if the path exists
+        if (Test-Path -LiteralPath $fullPath) {
+            $item = Get-Item -LiteralPath $fullPath -Force
+            return $item.FullName
+        }
+        
+        return $fullPath
+    } catch {
+        return $Path
+    }
+}
+
 # GitHub repository details
 $GH_REPO = "javaquery/unosdk"
 $GH_API_URL = "https://api.github.com/repos/$GH_REPO/releases/latest"
@@ -65,6 +91,11 @@ Write-Host ""
 
 # Check execution policy before proceeding
 Test-ExecutionPolicy
+
+# Normalize installation path to handle 8.3 short names
+$InstallPath = Get-LongPath $InstallPath
+Write-Host "[*] Installation directory: $InstallPath" -ForegroundColor Gray
+Write-Host ""
 
 # Function to check if running as administrator
 function Test-Administrator {
@@ -140,7 +171,16 @@ try {
     }
     
     # Download the binary
-    $tempFile = Join-Path $env:TEMP "unosdk_download.exe"
+    $tempDir = Get-LongPath $env:TEMP
+    $tempFile = Join-Path $tempDir "unosdk_download.exe"
+    
+    # Ensure temp directory exists
+    if (-not (Test-Path -LiteralPath $tempDir)) {
+        Write-Host "[ERROR] Temp directory does not exist: $tempDir" -ForegroundColor Red
+        Write-Host "[ERROR] Please check your TEMP environment variable" -ForegroundColor Yellow
+        Wait-ForKeyPress "Press any key to exit..."
+        exit 1
+    }
     
     # Remove old temp file if exists
     if (Test-Path -LiteralPath $tempFile) {
