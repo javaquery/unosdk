@@ -141,11 +141,40 @@ try {
     
     # Download the binary
     $tempFile = Join-Path $env:TEMP "unosdk_download.exe"
-    $progressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile -UseBasicParsing
-    $progressPreference = 'Continue'
     
-    Write-Host "[OK] Download completed" -ForegroundColor Green
+    # Remove old temp file if exists
+    if (Test-Path $tempFile) {
+        Remove-Item $tempFile -Force -ErrorAction SilentlyContinue
+    }
+    
+    Write-Host "[*] Downloading to: $tempFile" -ForegroundColor Gray
+    $progressPreference = 'SilentlyContinue'
+    try {
+        Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile -UseBasicParsing
+    } catch {
+        Write-Host "[ERROR] Download failed: $($_.Exception.Message)" -ForegroundColor Red
+        Wait-ForKeyPress "Press any key to exit..."
+        exit 1
+    } finally {
+        $progressPreference = 'Continue'
+    }
+    
+    # Verify the download was successful
+    if (-not (Test-Path $tempFile)) {
+        Write-Host "[ERROR] Downloaded file not found at: $tempFile" -ForegroundColor Red
+        Write-Host "[ERROR] The download may have failed silently." -ForegroundColor Red
+        Wait-ForKeyPress "Press any key to exit..."
+        exit 1
+    }
+    
+    $fileSize = (Get-Item $tempFile).Length
+    if ($fileSize -eq 0) {
+        Write-Host "[ERROR] Downloaded file is empty (0 bytes)" -ForegroundColor Red
+        Wait-ForKeyPress "Press any key to exit..."
+        exit 1
+    }
+    
+    Write-Host "[OK] Download completed ($([math]::Round($fileSize/1MB, 2)) MB)" -ForegroundColor Green
     
     # Stop any running unosdk processes
     $runningProcesses = Get-Process -Name "unosdk" -ErrorAction SilentlyContinue
@@ -157,7 +186,32 @@ try {
     
     # Move downloaded file to installation directory
     $targetPath = Join-Path $InstallPath "unosdk.exe"
-    Move-Item -Path $tempFile -Destination $targetPath -Force
+    
+    Write-Host "[*] Installing to: $targetPath" -ForegroundColor Gray
+    
+    # Verify source file exists before moving
+    if (-not (Test-Path $tempFile)) {
+        Write-Host "[ERROR] Source file disappeared: $tempFile" -ForegroundColor Red
+        Wait-ForKeyPress "Press any key to exit..."
+        exit 1
+    }
+    
+    try {
+        Move-Item -Path $tempFile -Destination $targetPath -Force -ErrorAction Stop
+    } catch {
+        Write-Host "[ERROR] Failed to move file to installation directory" -ForegroundColor Red
+        Write-Host "[ERROR] Details: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "[ERROR] You may need to run as Administrator or check folder permissions" -ForegroundColor Yellow
+        Wait-ForKeyPress "Press any key to exit..."
+        exit 1
+    }
+    
+    # Verify installation succeeded
+    if (-not (Test-Path $targetPath)) {
+        Write-Host "[ERROR] Installation verification failed - file not found at: $targetPath" -ForegroundColor Red
+        Wait-ForKeyPress "Press any key to exit..."
+        exit 1
+    }
     
     Write-Host "[OK] Installed to: $targetPath" -ForegroundColor Green
     
