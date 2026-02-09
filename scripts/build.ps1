@@ -27,6 +27,23 @@ Write-Host "Commit:  $commit" -ForegroundColor Green
 Write-Host "Date:    $date" -ForegroundColor Green
 Write-Host ""
 
+# Run tests before building
+Write-Host "Running tests..." -ForegroundColor Yellow
+go test ./...
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host ""
+    Write-Host "=====================================" -ForegroundColor Red
+    Write-Host "  Tests Failed!" -ForegroundColor Red
+    Write-Host "=====================================" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Build aborted. Please fix failing tests before building." -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "  All tests passed!" -ForegroundColor Green
+Write-Host ""
+
 # Build flags - inject into version package variables
 $ldflags = "-s -w -X github.com/javaquery/unosdk/pkg/version.GitCommit=$commit -X github.com/javaquery/unosdk/pkg/version.BuildDate=$date"
 
@@ -44,9 +61,9 @@ $env:GOARCH = "amd64"
 go build -ldflags="$ldflags" -o bin/unosdk-amd64.exe ./cmd/unosdk
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "  ✓ Built: bin/unosdk-amd64.exe" -ForegroundColor Green
+    Write-Host "  Built: bin/unosdk-amd64.exe" -ForegroundColor Green
 } else {
-    Write-Host "  ✗ Build failed!" -ForegroundColor Red
+    Write-Host "  Build failed!" -ForegroundColor Red
     exit 1
 }
 
@@ -57,9 +74,9 @@ $env:GOARCH = "386"
 go build -ldflags="$ldflags" -o bin/unosdk-386.exe ./cmd/unosdk
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "  ✓ Built: bin/unosdk-386.exe" -ForegroundColor Green
+    Write-Host "  Built: bin/unosdk-386.exe" -ForegroundColor Green
 } else {
-    Write-Host "  ✗ Build failed!" -ForegroundColor Red
+    Write-Host "  Build failed!" -ForegroundColor Red
 }
 
 # Build for Windows ARM64
@@ -69,9 +86,9 @@ $env:GOARCH = "arm64"
 go build -ldflags="$ldflags" -o bin/unosdk-arm64.exe ./cmd/unosdk
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "  ✓ Built: bin/unosdk-arm64.exe" -ForegroundColor Green
+    Write-Host "  Built: bin/unosdk-arm64.exe" -ForegroundColor Green
 } else {
-    Write-Host "  ✗ Build failed!" -ForegroundColor Red
+    Write-Host "  Build failed!" -ForegroundColor Red
 }
 
 # Create default copy
