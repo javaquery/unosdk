@@ -8,6 +8,14 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Function to pause and wait for user input before closing
+function Wait-ForKeyPress {
+    param([string]$Message = "Press any key to continue...")
+    Write-Host ""
+    Write-Host $Message -ForegroundColor Gray
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+
 # GitHub repository details
 $GH_REPO = "javaquery/unosdk"
 $GH_API_URL = "https://api.github.com/repos/$GH_REPO/releases/latest"
@@ -37,6 +45,7 @@ function Test-ExecutionPolicy {
         $response = Read-Host "Do you want to continue anyway? (Y/N)"
         if ($response -ne "Y" -and $response -ne "y") {
             Write-Host "Installation cancelled." -ForegroundColor Red
+            Wait-ForKeyPress
             exit 1
         }
     } elseif ($executionPolicy -eq "AllSigned") {
@@ -92,6 +101,7 @@ if (Test-Path "$InstallPath\unosdk.exe") {
         $response = Read-Host "Do you want to replace it with the latest version? (Y/N)"
         if ($response -ne "Y" -and $response -ne "y") {
             Write-Host "Installation cancelled." -ForegroundColor Red
+            Wait-ForKeyPress
             exit 0
         }
     }
@@ -113,6 +123,7 @@ try {
         Write-Host "[ERROR] Could not find Windows binary in release assets" -ForegroundColor Red
         Write-Host "Available assets:" -ForegroundColor Yellow
         $release.assets | ForEach-Object { Write-Host "  - $($_.name)" -ForegroundColor Yellow }
+        Wait-ForKeyPress
         exit 1
     }
     
@@ -175,5 +186,7 @@ try {
     
 } catch {
     Write-Host "[ERROR] Installation failed: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "[ERROR] Stack trace: $($_.ScriptStackTrace)" -ForegroundColor Red
+    Wait-ForKeyPress "Press any key to exit..."
     exit 1
 }
