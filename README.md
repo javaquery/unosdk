@@ -27,6 +27,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
   - Maven: Apache Maven build tool
   - Gradle: Gradle build automation tool
   - Go: Official Go programming language
+  - C++: MinGW-w64 (GCC/G++ toolchain)
 - 🔧 **Automatic Environment Setup**: Automatically configures PATH and environment variables
 - 📋 **Registry Management**: Keeps track of all installed SDKs
 - ⚡ **Fast Downloads**: Parallel downloads with progress tracking
@@ -43,6 +44,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 | Maven | apache | Apache Maven build automation tool |
 | Gradle | gradle | Gradle build automation tool |
 | Go | golang | Go programming language |
+| C++ | mingw | MinGW-w64 GCC/G++ toolchain |
 
 ## Installation
 
@@ -163,6 +165,12 @@ unosdk install go golang 1.23.5
 # Install specific Go version
 unosdk install go golang 1.22.10
 
+# Install C++ (MinGW-w64)
+unosdk install cpp mingw 15.2.0
+
+# Install specific MinGW version
+unosdk install cpp mingw 14.2.0
+
 # Install with custom path
 unosdk install java openjdk 17 --path C:\SDKs\java
 
@@ -187,6 +195,9 @@ unosdk switch gradle gradle 8.12
 
 # Switch to a different Go version
 unosdk switch go golang 1.23.5
+
+# Switch to a different C++ (MinGW) version
+unosdk switch cpp mingw 15.2.0
 ```
 
 ### Uninstall SDKs
@@ -238,9 +249,13 @@ C:\Users\<username>\.unosdk\
 │   └── 3.9.9\
 ├── gradle\
 │   └── 8.12\
-└── go\
-    └── golang\
-        └── 1.23.5\
+├── go\
+│   └── golang\
+│       └── 1.23.5\
+└── cpp\
+    └── mingw\
+        └── 15.2.0\
+            └── mingw64\  # Contains bin/, include/, lib/, etc.
 ```
 
 For example, Java Amazon Corretto 11 would be installed at:

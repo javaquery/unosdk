@@ -13,6 +13,7 @@ const (
 	FlutterSDK SDKType = "flutter"
 	MavenSDK   SDKType = "maven"
 	GradleSDK  SDKType = "gradle"
+	CppSDK     SDKType = "cpp"
 )
 
 // SDK represents an SDK installation
