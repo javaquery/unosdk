@@ -1,4 +1,4 @@
-package cpp
+package c
 
 import (
 	"context"
@@ -10,10 +10,10 @@ import (
 	"github.com/javaquery/unosdk/pkg/models"
 )
 
-// MinGWProvider implements the Provider interface for MinGW-w64 C++ toolchain
+// MinGWProvider implements the Provider interface for MinGW-w64 C toolchain
 type MinGWProvider struct{}
 
-// NewMinGWProvider creates a new MinGW-w64 provider
+// NewMinGWProvider creates a new MinGW-w64 provider for C
 func NewMinGWProvider() *MinGWProvider {
 	return &MinGWProvider{}
 }
@@ -23,11 +23,11 @@ func (p *MinGWProvider) Name() string {
 }
 
 func (p *MinGWProvider) DisplayName() string {
-	return "MinGW-w64"
+	return "MinGW-w64 (GCC)"
 }
 
 func (p *MinGWProvider) Type() models.SDKType {
-	return models.CppSDK
+	return models.CSDK
 }
 
 func (p *MinGWProvider) GetVersions(ctx context.Context) ([]string, error) {
@@ -50,7 +50,7 @@ func (p *MinGWProvider) GetChecksum(version string, arch string) (string, error)
 
 func (p *MinGWProvider) GetDefaultInstallPath(version string) string {
 	homeDir, _ := os.UserHomeDir()
-	return filepath.Join(homeDir, ".unosdk", "cpp", "mingw", version)
+	return filepath.Join(homeDir, ".unosdk", "c", "mingw", version)
 }
 
 func (p *MinGWProvider) Validate(version string) error {

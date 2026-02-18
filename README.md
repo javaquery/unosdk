@@ -17,7 +17,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 
 ## Features
 
-- 🚀 **Multi-SDK Support**: Manage Java, Node.js, Python, Flutter, Maven, Gradle, and Go installations from a single tool
+- 🚀 **Multi-SDK Support**: Manage Java, Node.js, Python, Flutter, Maven, Gradle, Go, C, and C++ installations from a single tool
 - 🔄 **Version Switching**: Easily switch between different SDK versions
 - 📦 **Multiple Providers**: Support for various distribution providers
   - Java: Amazon Corretto, OpenJDK, GraalVM
@@ -27,6 +27,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
   - Maven: Apache Maven build tool
   - Gradle: Gradle build automation tool
   - Go: Official Go programming language
+  - C: MinGW-w64 (GCC toolchain)
   - C++: MinGW-w64 (GCC/G++ toolchain)
 - 🔧 **Automatic Environment Setup**: Automatically configures PATH and environment variables
 - 📋 **Registry Management**: Keeps track of all installed SDKs
@@ -44,6 +45,7 @@ If you've used [SDKMAN!](https://sdkman.io/) on Linux or macOS and wished for so
 | Maven | apache | Apache Maven build automation tool |
 | Gradle | gradle | Gradle build automation tool |
 | Go | golang | Go programming language |
+| C | mingw | MinGW-w64 GCC toolchain |
 | C++ | mingw | MinGW-w64 GCC/G++ toolchain |
 
 ## Installation
@@ -171,6 +173,9 @@ unosdk install cpp mingw 15.2.0
 # Install specific MinGW version
 unosdk install cpp mingw 14.2.0
 
+# Install C (MinGW-w64)
+unosdk install c mingw 15.2.0
+
 # Install with custom path
 unosdk install java openjdk 17 --path C:\SDKs\java
 
@@ -198,6 +203,9 @@ unosdk switch go golang 1.23.5
 
 # Switch to a different C++ (MinGW) version
 unosdk switch cpp mingw 15.2.0
+
+# Switch to a different C (MinGW) version
+unosdk switch c mingw 15.2.0
 ```
 
 ### Uninstall SDKs
@@ -252,10 +260,14 @@ C:\Users\<username>\.unosdk\
 ├── go\
 │   └── golang\
 │       └── 1.23.5\
+├── c\
+│   └── mingw\
+│       └── 15.2.0\
+│           └── mingw64\  # Contains bin/ (gcc), include/, lib/, etc.
 └── cpp\
     └── mingw\
         └── 15.2.0\
-            └── mingw64\  # Contains bin/, include/, lib/, etc.
+            └── mingw64\  # Contains bin/ (g++, gcc), include/, lib/, etc.
 ```
 
 For example, Java Amazon Corretto 11 would be installed at:

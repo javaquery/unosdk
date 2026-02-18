@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2026-02-18
 
 ### Added
+- Support for C SDK provider (MinGW-w64)
 - Support for C++ SDK provider (MinGW-w64)
 - MinGW-w64 GCC versions: 15.2.0, 14.2.0, 14.1.0, 13.2.0, 13.1.0, 12.3.0, 12.2.0, 12.1.0, 11.3.0, 11.2.0, 11.1.0
-- Includes GCC, G++, and related C/C++ development tools
+- Includes GCC (C compiler), G++ (C++ compiler), and related development tools
 - Automatic PATH configuration for MinGW bin directory
+- Use `unosdk install c mingw <version>` for C or `unosdk install cpp mingw <version>` for C++
 
 ## [1.1.0] - 2026-02-06
 

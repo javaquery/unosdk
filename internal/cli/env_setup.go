@@ -82,6 +82,14 @@ func cleanupExistingSDKPaths(reg *registry.Registry, sdk *models.SDK) error {
 			if isAdmin {
 				_ = env.RemoveFromSystemPathSingle(binPath)
 			}
+
+		case models.CSDK:
+			// Remove MinGW bin from PATH
+			binPath := installedSDK.InstallPath + "\\bin"
+			_ = env.RemoveFromPath(binPath)
+			if isAdmin {
+				_ = env.RemoveFromSystemPathSingle(binPath)
+			}
 		}
 	}
 
@@ -120,6 +128,9 @@ func checkSystemPathConflicts(sdk *models.SDK) {
 	case models.CppSDK:
 		sdkTypeName = "mingw"
 		displayName = "C++ (MinGW)"
+	case models.CSDK:
+		sdkTypeName = "mingw"
+		displayName = "C (MinGW)"
 	default:
 		return
 	}
@@ -329,6 +340,25 @@ func setupSDKEnvironment(sdk *models.SDK, setJavaHome bool) error {
 		}
 
 	case models.CppSDK:
+		// MinGW bin directory (install path already includes mingw64 from extraction)
+		binPath := sdk.InstallPath + "\\bin"
+		
+		// Add to User PATH
+		if err := env.AddToPath(binPath); err != nil {
+			return fmt.Errorf("failed to add to User PATH: %w", err)
+		}
+		fmt.Println("  Added to User PATH: " + binPath)
+		
+		// Also add to System PATH if running as admin
+		if isAdmin {
+			if err := env.AddToSystemPath(binPath); err != nil {
+				fmt.Printf("  ⚠ Failed to add to System PATH: %v\n", err)
+			} else {
+				fmt.Println("  Added to System PATH: " + binPath)
+			}
+		}
+
+	case models.CSDK:
 		// MinGW bin directory (install path already includes mingw64 from extraction)
 		binPath := sdk.InstallPath + "\\bin"
 		
