@@ -40,7 +40,10 @@ Examples:
   unosdk switch go golang 1.23.5
 
   # Switch to C++ (MinGW) 15.2.0
-  unosdk switch cpp mingw 15.2.0`,
+  unosdk switch cpp mingw 15.2.0
+
+  # Switch to C (MinGW) 15.2.0
+  unosdk switch c mingw 15.2.0`,
 	Args: cobra.ExactArgs(3),
 	RunE: runSwitch,
 }
@@ -56,7 +59,7 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 
 	// Validate SDK type
 	if !isValidSDKType(sdkType) {
-		return fmt.Errorf("invalid SDK type: %s (valid types: java, node, python, go, maven, gradle, flutter, cpp)", sdkType)
+		return fmt.Errorf("invalid SDK type: %s (valid types: java, node, python, go, maven, gradle, flutter, cpp, c)", sdkType)
 	}
 
 	// Initialize registry
@@ -104,7 +107,7 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 // isValidSDKType checks if the SDK type is valid
 func isValidSDKType(sdkType models.SDKType) bool {
 	switch sdkType {
-	case models.JavaSDK, models.NodeSDK, models.PythonSDK, models.GoSDK, models.MavenSDK, models.GradleSDK, models.FlutterSDK, models.CppSDK:
+	case models.JavaSDK, models.NodeSDK, models.PythonSDK, models.GoSDK, models.MavenSDK, models.GradleSDK, models.FlutterSDK, models.CppSDK, models.CSDK:
 		return true
 	default:
 		return false

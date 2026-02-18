@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/javaquery/unosdk/internal/installer"
 	"github.com/javaquery/unosdk/internal/providers"
+	"github.com/javaquery/unosdk/internal/providers/c"
 	"github.com/javaquery/unosdk/internal/providers/cpp"
 	"github.com/javaquery/unosdk/internal/providers/flutter"
 	"github.com/javaquery/unosdk/internal/providers/go"
@@ -89,6 +90,7 @@ func runInstall(cmd *cobra.Command, args []string) error {
 	providerRegistry.Register(gradle.NewGradleProvider())
 	providerRegistry.Register(golang.NewGoProvider())
 	providerRegistry.Register(cpp.NewMinGWProvider())
+	providerRegistry.Register(c.NewMinGWProvider())
 
 	// Initialize installer
 	inst := installer.NewInstaller(providerRegistry)

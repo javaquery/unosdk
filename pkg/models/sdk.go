@@ -14,6 +14,7 @@ const (
 	MavenSDK   SDKType = "maven"
 	GradleSDK  SDKType = "gradle"
 	CppSDK     SDKType = "cpp"
+	CSDK       SDKType = "c"
 )
 
 // SDK represents an SDK installation
