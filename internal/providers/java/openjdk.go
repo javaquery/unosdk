@@ -31,16 +31,16 @@ func (p *OpenJDKProvider) Type() models.SDKType {
 
 func (p *OpenJDKProvider) GetVersions(ctx context.Context) ([]string, error) {
 	return []string{
-		"25.0.0",
-		"21.0.1",
-		"17.0.9",
+		"25.0.2",
+		"21.0.10",
+		"17.0.18",
 		"11.0.21",
 		"8u392",
 	}, nil
 }
 
 func (p *OpenJDKProvider) GetLatestVersion(ctx context.Context) (string, error) {
-	return "25.0.0", nil
+	return "25.0.2", nil
 }
 
 func (p *OpenJDKProvider) GetDownloadURL(version string, arch string) (string, error) {
@@ -58,18 +58,18 @@ func (p *OpenJDKProvider) GetDownloadURL(version string, arch string) (string, e
 	var repoName, releaseTag, fileName string
 	
 	switch version {
-	case "25.0.0", "25":
+	case "25.0.2", "25":
 		repoName = "temurin25-binaries"
-		releaseTag = "jdk-25+36"
-		fileName = fmt.Sprintf("OpenJDK25U-jdk_%s_windows_hotspot_25_36.zip", arch)
-	case "21.0.1", "21":
+		releaseTag = "jdk-25.0.2+10"
+		fileName = fmt.Sprintf("OpenJDK25U-jdk_%s_windows_hotspot_25.0.2_10.zip", arch)
+	case "21.0.10", "21":
 		repoName = "temurin21-binaries"
-		releaseTag = "jdk-21.0.1+12"
-		fileName = fmt.Sprintf("OpenJDK21U-jdk_%s_windows_hotspot_21.0.1_12.zip", arch)
-	case "17.0.9", "17":
+		releaseTag = "jdk-21.0.10+7"
+		fileName = fmt.Sprintf("OpenJDK21U-jdk_%s_windows_hotspot_21.0.10_7.zip", arch)
+	case "17.0.18", "17":
 		repoName = "temurin17-binaries"
-		releaseTag = "jdk-17.0.9+9"
-		fileName = fmt.Sprintf("OpenJDK17U-jdk_%s_windows_hotspot_17.0.9_9.zip", arch)
+		releaseTag = "jdk-17.0.18+8"
+		fileName = fmt.Sprintf("OpenJDK17U-jdk_%s_windows_hotspot_17.0.18_8.zip", arch)
 	case "11.0.21", "11":
 		repoName = "temurin11-binaries"
 		releaseTag = "jdk-11.0.21+9"

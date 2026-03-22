@@ -36,13 +36,13 @@ func TestAmazonCorrettoProvider_GetVersions(t *testing.T) {
 	// Check if latest version is present
 	found := false
 	for _, v := range versions {
-		if v == "25.0.0" {
+		if v == "25.0.2" {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Error("GetVersions() should contain version 25.0.0")
+		t.Error("GetVersions() should contain version 25.0.2")
 	}
 }
 
@@ -55,8 +55,8 @@ func TestAmazonCorrettoProvider_GetLatestVersion(t *testing.T) {
 		t.Fatalf("GetLatestVersion() error = %v", err)
 	}
 	
-	if version != "25.0.0" {
-		t.Errorf("GetLatestVersion() = %v, want %v", version, "25.0.0")
+	if version != "25.0.2" {
+		t.Errorf("GetLatestVersion() = %v, want %v", version, "25.0.2")
 	}
 }
 
@@ -72,21 +72,21 @@ func TestAmazonCorrettoProvider_GetDownloadURL(t *testing.T) {
 	}{
 		{
 			name:    "Corretto 25 x64 architecture",
-			version: "25.0.0",
+			version: "25.0.2",
 			arch:    "x64",
 			want:    "https://corretto.aws/downloads/latest/amazon-corretto-25-x64-windows-jdk.zip",
 			wantErr: false,
 		},
 		{
 			name:    "Corretto 21 amd64 architecture",
-			version: "21.0.1",
+			version: "21.0.10",
 			arch:    "amd64",
 			want:    "https://corretto.aws/downloads/latest/amazon-corretto-21-x64-windows-jdk.zip",
 			wantErr: false,
 		},
 		{
 			name:    "Corretto 17 x64 architecture",
-			version: "17.0.9",
+			version: "17.0.18",
 			arch:    "x64",
 			want:    "https://corretto.aws/downloads/latest/amazon-corretto-17-x64-windows-jdk.zip",
 			wantErr: false,
@@ -107,7 +107,7 @@ func TestAmazonCorrettoProvider_GetDownloadURL(t *testing.T) {
 		},
 		{
 			name:    "arm64 architecture",
-			version: "21.0.1",
+			version: "21.0.10",
 			arch:    "arm64",
 			want:    "https://corretto.aws/downloads/latest/amazon-corretto-21-aarch64-windows-jdk.zip",
 			wantErr: false,
