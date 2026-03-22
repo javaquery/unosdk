@@ -36,13 +36,13 @@ func TestPythonProvider_GetVersions(t *testing.T) {
 	// Check if latest version is present
 	found := false
 	for _, v := range versions {
-		if v == "3.12.1" {
+		if v == "3.14.3" {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Error("GetVersions() should contain version 3.12.1")
+		t.Error("GetVersions() should contain version 3.14.3")
 	}
 }
 
@@ -55,8 +55,8 @@ func TestPythonProvider_GetLatestVersion(t *testing.T) {
 		t.Fatalf("GetLatestVersion() error = %v", err)
 	}
 	
-	if version != "3.12.1" {
-		t.Errorf("GetLatestVersion() = %v, want %v", version, "3.12.1")
+	if version != "3.14.3" {
+		t.Errorf("GetLatestVersion() = %v, want %v", version, "3.14.3")
 	}
 }
 
@@ -71,31 +71,31 @@ func TestPythonProvider_GetDownloadURL(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "Python 3.12.1 amd64 architecture",
-			version: "3.12.1",
+			name:    "Python 3.14.3 amd64 architecture",
+			version: "3.14.3",
 			arch:    "amd64",
-			want:    "https://www.python.org/ftp/python/3.12.1/python-3.12.1-amd64.exe",
+			want:    "https://www.python.org/ftp/python/3.14.3/python-3.14.3-amd64.exe",
 			wantErr: false,
 		},
 		{
-			name:    "Python 3.11.7 amd64 architecture",
-			version: "3.11.7",
+			name:    "Python 3.13.12 amd64 architecture",
+			version: "3.13.12",
 			arch:    "amd64",
-			want:    "https://www.python.org/ftp/python/3.11.7/python-3.11.7-amd64.exe",
+			want:    "https://www.python.org/ftp/python/3.13.12/python-3.13.12-amd64.exe",
 			wantErr: false,
 		},
 		{
-			name:    "Python 3.10.13 default architecture",
-			version: "3.10.13",
+			name:    "Python 3.12.13 default architecture",
+			version: "3.12.13",
 			arch:    "",
-			want:    "https://www.python.org/ftp/python/3.10.13/python-3.10.13-amd64.exe",
+			want:    "https://www.python.org/ftp/python/3.12.13/python-3.12.13-amd64.exe",
 			wantErr: false,
 		},
 		{
-			name:    "Python 3.9.18 amd64 architecture",
-			version: "3.9.18",
+			name:    "Python 3.11.15 amd64 architecture",
+			version: "3.11.15",
 			arch:    "amd64",
-			want:    "https://www.python.org/ftp/python/3.9.18/python-3.9.18-amd64.exe",
+			want:    "https://www.python.org/ftp/python/3.11.15/python-3.11.15-amd64.exe",
 			wantErr: false,
 		},
 	}
@@ -116,7 +116,7 @@ func TestPythonProvider_GetDownloadURL(t *testing.T) {
 
 func TestPythonProvider_GetDefaultInstallPath(t *testing.T) {
 	provider := NewPythonProvider()
-	version := "3.12.1"
+	version := "3.14.3"
 	
 	path := provider.GetDefaultInstallPath(version)
 	if path == "" {
@@ -142,7 +142,7 @@ func TestPythonProvider_Validate(t *testing.T) {
 	}{
 		{
 			name:    "valid version",
-			version: "3.12.1",
+			version: "3.14.3",
 			wantErr: false,
 		},
 		{
