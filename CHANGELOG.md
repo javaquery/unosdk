@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Amazon Corretto Java versions: 25.0.0 → 25.0.2, 21.0.1 → 21.0.10, 17.0.9 → 17.0.18
 - OpenJDK (Eclipse Temurin) Java versions: 25.0.0 → 25.0.2 (jdk-25.0.2+10), 21.0.1 → 21.0.10 (jdk-21.0.10+7), 17.0.9 → 17.0.18 (jdk-17.0.18+8)
+- Node.js versions: 20.10.0 → 24.14.0, 18.19.0 → 22.22.1, 16.20.2 → 20.20.1 (dropped EOL versions 14.x, 16.x, 18.x)
 
 ## [1.2.0] - 2026-02-18
 

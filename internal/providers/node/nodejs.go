@@ -31,15 +31,14 @@ func (p *NodeJSProvider) Type() models.SDKType {
 
 func (p *NodeJSProvider) GetVersions(ctx context.Context) ([]string, error) {
 	return []string{
-		"20.10.0",
-		"18.19.0",
-		"16.20.2",
-		"14.21.3",
+		"24.14.0",
+		"22.22.1",
+		"20.20.1",
 	}, nil
 }
 
 func (p *NodeJSProvider) GetLatestVersion(ctx context.Context) (string, error) {
-	return "20.10.0", nil
+	return "24.14.0", nil
 }
 
 func (p *NodeJSProvider) GetDownloadURL(version string, arch string) (string, error) {
