@@ -32,19 +32,19 @@ func (p *FlutterProvider) Type() models.SDKType {
 func (p *FlutterProvider) GetVersions(ctx context.Context) ([]string, error) {
 	// Flutter stable releases
 	return []string{
-		"3.27.2",
-		"3.27.1",
+		"3.41.5",
+		"3.38.10",
+		"3.35.7",
+		"3.32.8",
+		"3.29.3",
+		"3.27.4",
 		"3.24.5",
-		"3.22.3",
-		"3.19.6",
-		"3.16.9",
-		"3.13.9",
 		"latest",
 	}, nil
 }
 
 func (p *FlutterProvider) GetLatestVersion(ctx context.Context) (string, error) {
-	return "3.27.2", nil
+	return "3.41.5", nil
 }
 
 func (p *FlutterProvider) GetDownloadURL(version string, arch string) (string, error) {
@@ -53,7 +53,7 @@ func (p *FlutterProvider) GetDownloadURL(version string, arch string) (string, e
 	
 	// Handle "latest" version
 	if version == "latest" {
-		version = "3.27.2"
+		version = "3.41.5"
 	}
 
 	// Flutter download URLs format: https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_{version}-stable.zip
