@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Gradle versions: 8.12 → 9.4.1 (added 9.x series: 9.4.1, 9.4.0, 9.3.1, 9.3.0, 9.2.1, 9.2.0, 9.1.0, 9.0.0; added 8.14.4, 8.14.3, 8.14.2, 8.14.1, 8.14, 8.13, 8.12.1; added 7.6.6, 7.6.5)
 - Go versions: 1.23.5 → 1.26.1 (added 1.26.x series: 1.26.1, 1.26.0; replaced 1.22.x with 1.25.x series: 1.25.8-1.25.0; replaced 1.21.x with 1.24.x series: 1.24.13-1.24.0)
 - Flutter SDK versions: 3.27.2 → 3.41.5 (added 3.41.5, 3.38.10, 3.35.7, 3.32.8, 3.29.3, 3.27.4; dropped EOL versions 3.22.x, 3.19.x, 3.16.x, 3.13.x)
+- Maven versions: 3.9.9 → 3.9.14 (added 3.9.14, 3.9.13, 3.9.12, 3.9.11, 3.9.10; replaced EOL 3.8.8/3.8.7/3.8.6 with 3.8.9; kept 3.6.3)
 
 ## [1.2.0] - 2026-02-18
 

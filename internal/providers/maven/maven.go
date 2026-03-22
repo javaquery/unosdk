@@ -31,19 +31,19 @@ func (p *MavenProvider) Type() models.SDKType {
 
 func (p *MavenProvider) GetVersions(ctx context.Context) ([]string, error) {
 	return []string{
+		"3.9.14",
+		"3.9.13",
+		"3.9.12",
+		"3.9.11",
+		"3.9.10",
 		"3.9.9",
-		"3.9.8",
-		"3.9.7",
-		"3.9.6",
-		"3.8.8",
-		"3.8.7",
-		"3.8.6",
+		"3.8.9",
 		"3.6.3",
 	}, nil
 }
 
 func (p *MavenProvider) GetLatestVersion(ctx context.Context) (string, error) {
-	return "3.9.9", nil
+	return "3.9.14", nil
 }
 
 func (p *MavenProvider) GetDownloadURL(version string, arch string) (string, error) {
@@ -54,9 +54,9 @@ func (p *MavenProvider) GetDownloadURL(version string, arch string) (string, err
 	// Extract major.minor version for URL path
 	var majorMinor string
 	switch version {
-	case "3.9.9", "3.9.8", "3.9.7", "3.9.6":
+	case "3.9.14", "3.9.13", "3.9.12", "3.9.11", "3.9.10", "3.9.9":
 		majorMinor = version
-	case "3.8.8", "3.8.7", "3.8.6":
+	case "3.8.9":
 		majorMinor = version
 	case "3.6.3":
 		majorMinor = version
