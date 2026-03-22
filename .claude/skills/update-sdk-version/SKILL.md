@@ -41,3 +41,5 @@ Based on the gathered information, generate code snipppet to add latest SDK vers
 - [] Ensure that the example usage provided is relevant and demonstrates the key features of the new SDK version effectively
 - [] Check that the code snippets are formatted correctly and are easy to read and understand.
 - [] We must have updated project version and changelog (./CHANGELOG.md) to reflect the addition of the new SDK in the project. Do only this if current version is not released yet. If current version is already released, then we will update the version and changelog in the next release when we have more changes to add along with the new SDK addition.
+- [] Run go mod tidy to ensure that any new dependencies added for the SDK are properly included in the project.
+- [] Run all tests to ensure that the update of the new SDK does not break any existing functionality in the project.
