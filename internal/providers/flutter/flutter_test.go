@@ -36,13 +36,13 @@ func TestFlutterProvider_GetVersions(t *testing.T) {
 	// Check if latest version is present
 	found := false
 	for _, v := range versions {
-		if v == "3.27.2" {
+		if v == "3.41.5" {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Error("GetVersions() should contain version 3.27.2")
+		t.Error("GetVersions() should contain version 3.41.5")
 	}
 	
 	// Check if "latest" is present
@@ -67,8 +67,8 @@ func TestFlutterProvider_GetLatestVersion(t *testing.T) {
 		t.Fatalf("GetLatestVersion() error = %v", err)
 	}
 	
-	if version != "3.27.2" {
-		t.Errorf("GetLatestVersion() = %v, want %v", version, "3.27.2")
+	if version != "3.41.5" {
+		t.Errorf("GetLatestVersion() = %v, want %v", version, "3.41.5")
 	}
 }
 
@@ -83,31 +83,31 @@ func TestFlutterProvider_GetDownloadURL(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "Flutter 3.27.2 x64 architecture",
-			version: "3.27.2",
+			name:    "Flutter 3.41.5 x64 architecture",
+			version: "3.41.5",
 			arch:    "x64",
-			want:    "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.27.2-stable.zip",
+			want:    "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.41.5-stable.zip",
 			wantErr: false,
 		},
 		{
-			name:    "Flutter 3.27.1 x64 architecture",
-			version: "3.27.1",
+			name:    "Flutter 3.38.10 x64 architecture",
+			version: "3.38.10",
 			arch:    "x64",
-			want:    "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.27.1-stable.zip",
+			want:    "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.38.10-stable.zip",
 			wantErr: false,
 		},
 		{
-			name:    "Flutter 3.24.5 arm64 architecture",
-			version: "3.24.5",
+			name:    "Flutter 3.35.7 arm64 architecture",
+			version: "3.35.7",
 			arch:    "arm64",
-			want:    "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.24.5-stable.zip",
+			want:    "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.35.7-stable.zip",
 			wantErr: false,
 		},
 		{
-			name:    "Flutter latest version resolves to 3.27.2",
+			name:    "Flutter latest version resolves to 3.41.5",
 			version: "latest",
 			arch:    "x64",
-			want:    "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.27.2-stable.zip",
+			want:    "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.41.5-stable.zip",
 			wantErr: false,
 		},
 	}
@@ -128,7 +128,7 @@ func TestFlutterProvider_GetDownloadURL(t *testing.T) {
 
 func TestFlutterProvider_GetDefaultInstallPath(t *testing.T) {
 	provider := NewFlutterProvider()
-	version := "3.27.2"
+	version := "3.41.5"
 	
 	path := provider.GetDefaultInstallPath(version)
 	if path == "" {
@@ -154,7 +154,7 @@ func TestFlutterProvider_Validate(t *testing.T) {
 	}{
 		{
 			name:    "valid version",
-			version: "3.27.2",
+			version: "3.41.5",
 			wantErr: false,
 		},
 		{
