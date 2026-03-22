@@ -31,6 +31,21 @@ func (p *GradleProvider) Type() models.SDKType {
 
 func (p *GradleProvider) GetVersions(ctx context.Context) ([]string, error) {
 	return []string{
+		"9.4.1",
+		"9.4.0",
+		"9.3.1",
+		"9.3.0",
+		"9.2.1",
+		"9.2.0",
+		"9.1.0",
+		"9.0.0",
+		"8.14.4",
+		"8.14.3",
+		"8.14.2",
+		"8.14.1",
+		"8.14",
+		"8.13",
+		"8.12.1",
 		"8.12",
 		"8.11.1",
 		"8.11",
@@ -51,6 +66,8 @@ func (p *GradleProvider) GetVersions(ctx context.Context) ([]string, error) {
 		"8.0.2",
 		"8.0.1",
 		"8.0",
+		"7.6.6",
+		"7.6.5",
 		"7.6.4",
 		"7.6.3",
 		"7.6.2",
@@ -60,7 +77,7 @@ func (p *GradleProvider) GetVersions(ctx context.Context) ([]string, error) {
 }
 
 func (p *GradleProvider) GetLatestVersion(ctx context.Context) (string, error) {
-	return "8.12", nil
+	return "9.4.1", nil
 }
 
 func (p *GradleProvider) GetDownloadURL(version string, arch string) (string, error) {

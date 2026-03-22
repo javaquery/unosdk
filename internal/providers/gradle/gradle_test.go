@@ -36,13 +36,13 @@ func TestGradleProvider_GetVersions(t *testing.T) {
 	// Check if latest version is present
 	found := false
 	for _, v := range versions {
-		if v == "8.12" {
+		if v == "9.4.1" {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Error("GetVersions() should contain version 8.12")
+		t.Error("GetVersions() should contain version 9.4.1")
 	}
 }
 
@@ -55,8 +55,8 @@ func TestGradleProvider_GetLatestVersion(t *testing.T) {
 		t.Fatalf("GetLatestVersion() error = %v", err)
 	}
 	
-	if version != "8.12" {
-		t.Errorf("GetLatestVersion() = %v, want %v", version, "8.12")
+	if version != "9.4.1" {
+		t.Errorf("GetLatestVersion() = %v, want %v", version, "9.4.1")
 	}
 }
 
@@ -71,10 +71,10 @@ func TestGradleProvider_GetDownloadURL(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "valid version 8.12",
-			version: "8.12",
+			name:    "valid version 9.4.1",
+			version: "9.4.1",
 			arch:    "x64",
-			want:    "https://services.gradle.org/distributions/gradle-8.12-bin.zip",
+			want:    "https://services.gradle.org/distributions/gradle-9.4.1-bin.zip",
 			wantErr: false,
 		},
 		{
@@ -110,7 +110,7 @@ func TestGradleProvider_GetDownloadURL(t *testing.T) {
 func TestGradleProvider_GetDownloadURL_Format(t *testing.T) {
 	provider := NewGradleProvider()
 	
-	url, err := provider.GetDownloadURL("8.12", "x64")
+	url, err := provider.GetDownloadURL("9.4.1", "x64")
 	if err != nil {
 		t.Fatalf("GetDownloadURL() error = %v", err)
 	}
@@ -134,7 +134,7 @@ func TestGradleProvider_Validate(t *testing.T) {
 	}{
 		{
 			name:    "valid version",
-			version: "8.12",
+			version: "9.4.1",
 			wantErr: false,
 		},
 		{
@@ -156,7 +156,7 @@ func TestGradleProvider_Validate(t *testing.T) {
 
 func TestGradleProvider_GetDefaultInstallPath(t *testing.T) {
 	provider := NewGradleProvider()
-	version := "8.12"
+	version := "9.4.1"
 	
 	path := provider.GetDefaultInstallPath(version)
 	if path == "" {
