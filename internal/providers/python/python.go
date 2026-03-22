@@ -31,15 +31,15 @@ func (p *PythonProvider) Type() models.SDKType {
 
 func (p *PythonProvider) GetVersions(ctx context.Context) ([]string, error) {
 	return []string{
-		"3.12.1",
-		"3.11.7",
-		"3.10.13",
-		"3.9.18",
+		"3.14.3",
+		"3.13.12",
+		"3.12.13",
+		"3.11.15",
 	}, nil
 }
 
 func (p *PythonProvider) GetLatestVersion(ctx context.Context) (string, error) {
-	return "3.12.1", nil
+	return "3.14.3", nil
 }
 
 func (p *PythonProvider) GetDownloadURL(version string, arch string) (string, error) {
