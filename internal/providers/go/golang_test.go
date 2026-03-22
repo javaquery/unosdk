@@ -36,13 +36,13 @@ func TestGoProvider_GetVersions(t *testing.T) {
 	// Check if latest version is present
 	found := false
 	for _, v := range versions {
-		if v == "1.23.5" {
+		if v == "1.26.1" {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Error("GetVersions() should contain version 1.23.5")
+		t.Error("GetVersions() should contain version 1.26.1")
 	}
 }
 
@@ -55,8 +55,8 @@ func TestGoProvider_GetLatestVersion(t *testing.T) {
 		t.Fatalf("GetLatestVersion() error = %v", err)
 	}
 	
-	if version != "1.23.5" {
-		t.Errorf("GetLatestVersion() = %v, want %v", version, "1.23.5")
+	if version != "1.26.1" {
+		t.Errorf("GetLatestVersion() = %v, want %v", version, "1.26.1")
 	}
 }
 
@@ -72,30 +72,30 @@ func TestGoProvider_GetDownloadURL(t *testing.T) {
 	}{
 		{
 			name:    "amd64 architecture",
-			version: "1.23.5",
+			version: "1.26.1",
 			arch:    "x64",
-			want:    "https://go.dev/dl/go1.23.5.windows-amd64.zip",
+			want:    "https://go.dev/dl/go1.26.1.windows-amd64.zip",
 			wantErr: false,
 		},
 		{
 			name:    "amd64 architecture explicit",
-			version: "1.23.5",
+			version: "1.26.1",
 			arch:    "amd64",
-			want:    "https://go.dev/dl/go1.23.5.windows-amd64.zip",
+			want:    "https://go.dev/dl/go1.26.1.windows-amd64.zip",
 			wantErr: false,
 		},
 		{
 			name:    "386 architecture",
-			version: "1.22.10",
+			version: "1.25.8",
 			arch:    "x86",
-			want:    "https://go.dev/dl/go1.22.10.windows-386.zip",
+			want:    "https://go.dev/dl/go1.25.8.windows-386.zip",
 			wantErr: false,
 		},
 		{
 			name:    "arm64 architecture",
-			version: "1.21.0",
+			version: "1.24.0",
 			arch:    "arm64",
-			want:    "https://go.dev/dl/go1.21.0.windows-arm64.zip",
+			want:    "https://go.dev/dl/go1.24.0.windows-arm64.zip",
 			wantErr: false,
 		},
 	}
@@ -117,7 +117,7 @@ func TestGoProvider_GetDownloadURL(t *testing.T) {
 func TestGoProvider_GetDownloadURL_Format(t *testing.T) {
 	provider := NewGoProvider()
 	
-	url, err := provider.GetDownloadURL("1.23.5", "x64")
+	url, err := provider.GetDownloadURL("1.26.1", "x64")
 	if err != nil {
 		t.Fatalf("GetDownloadURL() error = %v", err)
 	}
@@ -145,7 +145,7 @@ func TestGoProvider_Validate(t *testing.T) {
 	}{
 		{
 			name:    "valid version",
-			version: "1.23.5",
+			version: "1.26.1",
 			wantErr: false,
 		},
 		{
@@ -167,7 +167,7 @@ func TestGoProvider_Validate(t *testing.T) {
 
 func TestGoProvider_GetDefaultInstallPath(t *testing.T) {
 	provider := NewGoProvider()
-	version := "1.23.5"
+	version := "1.26.1"
 	
 	path := provider.GetDefaultInstallPath(version)
 	if path == "" {

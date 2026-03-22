@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Node.js versions: 20.10.0 → 24.14.0, 18.19.0 → 22.22.1, 16.20.2 → 20.20.1 (dropped EOL versions 14.x, 16.x, 18.x)
 - Python versions: 3.12.1 → 3.14.3, 3.11.7 → 3.13.12, 3.10.13 → 3.12.13, 3.9.18 → 3.11.15 (dropped EOL versions 3.9.x, 3.10.x; added 3.14.x, 3.13.x)
 - Gradle versions: 8.12 → 9.4.1 (added 9.x series: 9.4.1, 9.4.0, 9.3.1, 9.3.0, 9.2.1, 9.2.0, 9.1.0, 9.0.0; added 8.14.4, 8.14.3, 8.14.2, 8.14.1, 8.14, 8.13, 8.12.1; added 7.6.6, 7.6.5)
+- Go versions: 1.23.5 → 1.26.1 (added 1.26.x series: 1.26.1, 1.26.0; replaced 1.22.x with 1.25.x series: 1.25.8-1.25.0; replaced 1.21.x with 1.24.x series: 1.24.13-1.24.0)
 
 ## [1.2.0] - 2026-02-18
 
