@@ -32,16 +32,16 @@ func (p *AmazonCorrettoProvider) Type() models.SDKType {
 func (p *AmazonCorrettoProvider) GetVersions(ctx context.Context) ([]string, error) {
 	// In a real implementation, this would fetch from Amazon's API or website
 	return []string{
-		"25.0.0",
-		"21.0.1",
-		"17.0.9",
+		"25.0.2",
+		"21.0.10",
+		"17.0.18",
 		"11.0.21",
 		"8.392.08.1",
 	}, nil
 }
 
 func (p *AmazonCorrettoProvider) GetLatestVersion(ctx context.Context) (string, error) {
-	return "25.0.0", nil
+	return "25.0.2", nil
 }
 
 func (p *AmazonCorrettoProvider) GetDownloadURL(version string, arch string) (string, error) {
@@ -58,11 +58,11 @@ func (p *AmazonCorrettoProvider) GetDownloadURL(version string, arch string) (st
 	
 	var majorVersion string
 	switch version {
-	case "25.0.0", "25":
+	case "25.0.2", "25":
 		majorVersion = "25"
-	case "21.0.1", "21":
+	case "21.0.10", "21":
 		majorVersion = "21"
-	case "17.0.9", "17":
+	case "17.0.18", "17":
 		majorVersion = "17"
 	case "11.0.21", "11":
 		majorVersion = "11"
