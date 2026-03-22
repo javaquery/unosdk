@@ -36,13 +36,13 @@ func TestMavenProvider_GetVersions(t *testing.T) {
 	// Check if latest version is present
 	found := false
 	for _, v := range versions {
-		if v == "3.9.9" {
+		if v == "3.9.14" {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Error("GetVersions() should contain version 3.9.9")
+		t.Error("GetVersions() should contain version 3.9.14")
 	}
 }
 
@@ -55,8 +55,8 @@ func TestMavenProvider_GetLatestVersion(t *testing.T) {
 		t.Fatalf("GetLatestVersion() error = %v", err)
 	}
 	
-	if version != "3.9.9" {
-		t.Errorf("GetLatestVersion() = %v, want %v", version, "3.9.9")
+	if version != "3.9.14" {
+		t.Errorf("GetLatestVersion() = %v, want %v", version, "3.9.14")
 	}
 }
 
@@ -71,24 +71,24 @@ func TestMavenProvider_GetDownloadURL(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "valid version 3.9.9",
-			version: "3.9.9",
+			name:    "valid version 3.9.14",
+			version: "3.9.14",
 			arch:    "x64",
-			want:    "https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.zip",
+			want:    "https://archive.apache.org/dist/maven/maven-3/3.9.14/binaries/apache-maven-3.9.14-bin.zip",
 			wantErr: false,
 		},
 		{
-			name:    "valid version 3.9.8",
-			version: "3.9.8",
+			name:    "valid version 3.9.13",
+			version: "3.9.13",
 			arch:    "x64",
-			want:    "https://archive.apache.org/dist/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.zip",
+			want:    "https://archive.apache.org/dist/maven/maven-3/3.9.13/binaries/apache-maven-3.9.13-bin.zip",
 			wantErr: false,
 		},
 		{
-			name:    "valid version 3.8.8",
-			version: "3.8.8",
+			name:    "valid version 3.8.9",
+			version: "3.8.9",
 			arch:    "arm64",
-			want:    "https://archive.apache.org/dist/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.zip",
+			want:    "https://archive.apache.org/dist/maven/maven-3/3.8.9/binaries/apache-maven-3.8.9-bin.zip",
 			wantErr: false,
 		},
 		{
@@ -117,7 +117,7 @@ func TestMavenProvider_GetDownloadURL(t *testing.T) {
 func TestMavenProvider_GetDownloadURL_ContainsBinariesPath(t *testing.T) {
 	provider := NewMavenProvider()
 	
-	url, err := provider.GetDownloadURL("3.9.8", "x64")
+	url, err := provider.GetDownloadURL("3.9.14", "x64")
 	if err != nil {
 		t.Fatalf("GetDownloadURL() error = %v", err)
 	}
@@ -159,8 +159,8 @@ func TestMavenProvider_Validate(t *testing.T) {
 
 func TestMavenProvider_GetDefaultInstallPath(t *testing.T) {
 	provider := NewMavenProvider()
-	version := "3.9.9"
-	
+	version := "3.9.14"
+
 	path := provider.GetDefaultInstallPath(version)
 	if path == "" {
 		t.Error("GetDefaultInstallPath() returned empty path")
