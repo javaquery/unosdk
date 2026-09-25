@@ -1,7 +1,7 @@
 # UnoSDK
 
 <p align="center">
-  <img src="logo.svg" alt="UnoSDK Logo" width="200"/>
+  <img src="unosdk list.png" alt="UnoSDK Logo" width="200"/>
 </p>
 
 **UnoSDK** is a powerful CLI tool for Windows that simplifies the installation and management of multiple software development kits (SDKs) from various providers. Think of it as **SDKMAN for Windows** - bringing the same ease of SDK management to Windows machines. Say goodbye to manual downloads, extractions, and environment variable configurations.
