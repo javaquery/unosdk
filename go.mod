@@ -1,13 +1,13 @@
 module github.com/javaquery/unosdk
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/cavaliergopher/grab/v3 v3.0.1
 	github.com/schollz/progressbar/v3 v3.19.1
 	github.com/spf13/cobra v1.10.2
 	go.uber.org/zap v1.28.0
-	golang.org/x/sys v0.46.0
+	golang.org/x/sys v0.48.0
 )
 
 require (
