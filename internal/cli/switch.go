@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/spf13/cobra"
 	"github.com/javaquery/unosdk/internal/registry"
 	"github.com/javaquery/unosdk/pkg/models"
+	"github.com/spf13/cobra"
 )
 
 var switchCmd = &cobra.Command{
@@ -16,6 +16,10 @@ var switchCmd = &cobra.Command{
 
 This command updates environment variables (e.g., JAVA_HOME, PATH) to point to
 the specified SDK version. The SDK must already be installed.
+
+When unosdk is run through its shell wrapper (unosdk.cmd for cmd.exe, or the
+unosdk function in your PowerShell profile), the change is also applied to the
+current terminal immediately, so no restart is needed.
 
 Examples:
   # Switch to Java OpenJDK 21
@@ -71,11 +75,14 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 	// Check if SDK is installed
 	sdk, exists := reg.Get(sdkType, providerName, version)
 	if !exists {
-		return fmt.Errorf("SDK not found: %s %s %s\nPlease install it first using: unosdk install %s %s %s", 
+		return fmt.Errorf("SDK not found: %s %s %s\nPlease install it first using: unosdk install %s %s %s",
 			sdkType, providerName, version, sdkType, providerName, version)
 	}
 
 	fmt.Printf("Switching to %s %s %s...\n", sdkType, providerName, version)
+
+	// Tracks whether the change was also applied to the current terminal session
+	sessionApplied := false
 
 	// Setup environment variables (Windows-specific)
 	if runtime.GOOS == "windows" {
@@ -91,15 +98,29 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 
 		fmt.Println("✓ Environment variables configured")
 		fmt.Printf("  Location: %s\n", sdk.InstallPath)
-		
+
 		// Check for conflicts with System PATH
 		checkSystemPathConflicts(sdk)
+
+		// Apply the change to the current terminal too, when running via the shell wrapper.
+		// This writes a small script to the file named by UNOSDK_ENV_FILE, which the
+		// wrapper (unosdk.cmd / PowerShell function) executes inside the current shell.
+		if err := writeSessionScript(reg, sdk, true); err == nil {
+			sessionApplied = true
+		} else if err != errNoSession {
+			fmt.Printf("⚠ Warning: Failed to prepare current-session update: %v\n", err)
+		}
 	} else {
 		return fmt.Errorf("switch command is currently only supported on Windows")
 	}
 
 	fmt.Printf("\n✓ Successfully switched to %s %s %s\n", sdkType, providerName, version)
-	fmt.Println("Please restart your terminal for changes to take effect.")
+	if sessionApplied {
+		fmt.Println("Active in this terminal now. New terminals will pick it up too.")
+	} else {
+		fmt.Println("Please restart your terminal for changes to take effect.")
+		fmt.Println("(Tip: run unosdk through its shell wrapper to avoid restarts.)")
+	}
 
 	return nil
 }

@@ -98,6 +98,25 @@ if ($LASTEXITCODE -eq 0) {
 # Create default copy
 Copy-Item "bin/unosdk-amd64.exe" "bin/unosdk.exe"
 
+# Create a local test layout that mirrors the installed one, so restart-free
+# switching can be tested without running install.ps1:
+#   bin\dev\unosdk.cmd
+#   bin\dev\core\unosdk.exe
+$devDir = "bin/dev"
+$devCoreDir = "$devDir/core"
+$wrapperSource = "scripts/unosdk.cmd"
+$devLayoutReady = $false
+
+if (Test-Path $wrapperSource) {
+    New-Item -ItemType Directory -Path $devCoreDir -Force | Out-Null
+    Copy-Item "bin/unosdk-amd64.exe" "$devCoreDir/unosdk.exe" -Force
+    Copy-Item $wrapperSource "$devDir/unosdk.cmd" -Force
+    $devLayoutReady = $true
+    Write-Host "  Created wrapper test layout: bin/dev" -ForegroundColor Green
+} else {
+    Write-Host "  Skipped wrapper test layout ($wrapperSource not found)" -ForegroundColor Yellow
+}
+
 # Clean up environment variables
 Remove-Item Env:\GOOS -ErrorAction SilentlyContinue
 Remove-Item Env:\GOARCH -ErrorAction SilentlyContinue
@@ -112,5 +131,11 @@ Write-Host "  - unosdk.exe (default, amd64)" -ForegroundColor Gray
 Write-Host "  - unosdk-amd64.exe" -ForegroundColor Gray
 Write-Host "  - unosdk-386.exe" -ForegroundColor Gray
 Write-Host "  - unosdk-arm64.exe" -ForegroundColor Gray
+if ($devLayoutReady) {
+    Write-Host "  - dev\unosdk.cmd + dev\core\unosdk.exe (wrapper layout for testing)" -ForegroundColor Gray
+}
 Write-Host ""
 Write-Host "Run: .\bin\unosdk.exe --help" -ForegroundColor Yellow
+if ($devLayoutReady) {
+    Write-Host "Test restart-free switching in cmd:  .\bin\dev\unosdk.cmd switch java openjdk 21" -ForegroundColor Yellow
+}
