@@ -2,7 +2,7 @@ package version
 
 // Version is the current version of UnoSDK
 // Update this manually for new releases
-const Version = "1.3.0"
+const Version = "1.3.1"
 
 // Build information (set via ldflags during build)
 var (

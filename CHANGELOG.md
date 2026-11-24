@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-11-24
+
+### Added
+- Restart-free SDK switching: `unosdk switch`, `install` and `uninstall` now apply `PATH` and `JAVA_HOME` changes to the current terminal immediately
+- Shell wrappers that make this work: `unosdk.cmd` for Command Prompt and an `unosdk` function in the PowerShell profile
+- Fallback behavior: when `unosdk.exe` is run directly (without a wrapper), it still asks you to restart the terminal as before
+
+### Changed
+- `install.ps1` now installs the binary to `%LOCALAPPDATA%\unosdk\core\unosdk.exe`, creates `unosdk.cmd` in the install folder, and adds the `unosdk` function to both Windows PowerShell 5.1 and PowerShell 7+ profiles
+- `install.ps1` removes the legacy root-level `unosdk.exe` so existing installations migrate cleanly
+- `unosdk uninstall` now removes the uninstalled SDK from the current terminal and clears `JAVA_HOME` when it pointed to that SDK
+- Command output now states whether the change is active in the current terminal or a restart is needed
+- `build.ps1` creates a `bin\dev` folder with the wrapper layout for testing restart-free switching locally
+
+### Upgrade notes
+- Re-run the install script once to migrate to the new layout, then open a new terminal once to load the wrapper
+- When calling `unosdk` from a `.bat` file, use `call unosdk ...` so control returns to your script
+- PowerShell needs a script-friendly execution policy (e.g. `RemoteSigned`) for the profile function to load
+
 ## [1.3.0] - 2026-03-22
 
 ### Updated
